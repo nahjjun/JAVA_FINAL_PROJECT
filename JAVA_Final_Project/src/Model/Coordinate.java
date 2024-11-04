@@ -2,10 +2,12 @@ package Model;
 
 public class Coordinate {
 	private int row,col;
+	private Coordinate prevCoordinate;
 	
 	public Coordinate(int row, int col) {
 		this.row = row;
 		this.col = col;
+		this.prevCoordinate=null;
 	}
 	public Coordinate() {
 		this(0,0);
@@ -25,5 +27,12 @@ public class Coordinate {
 	public int getCol() {
 		return col;
 	}
-
+	
+	public void setPrevCoordinate(Coordinate prevCoordinate) throws Exception{
+		if(prevCoordinate==null) throw new Exception("Coordinate/setPrevCoordinate()/이전 좌표 객체가 null값이 입력되었습니다.");
+		this.prevCoordinate=prevCoordinate;
+	}
+	public Coordinate getPrevCoordinate() {
+		return this.prevCoordinate;
+	}
 }
