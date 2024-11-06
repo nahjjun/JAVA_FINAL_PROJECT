@@ -2,7 +2,7 @@ package Model;
 
 public class Coordinate {
 	private int row,col;
-	private Coordinate prevCoordinate;
+	private Coordinate prevCoordinate; // 경로 탐색을 위해 각 Coordinate 객체의 이전에 연결된 객체의 주소
 	
 	public Coordinate(int row, int col) {
 		this.row = row;

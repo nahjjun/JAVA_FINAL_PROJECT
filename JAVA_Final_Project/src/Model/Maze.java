@@ -2,6 +2,7 @@ package Model;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.Queue;
 
 public class Maze {
@@ -10,6 +11,10 @@ public class Maze {
 	public static final int USER_PLACE = 2;
 	public static final int WALL_ENTRANCE = 3; // 벽 입구
 	public static final int USER_ENTRANCE = 4; // 사용자 공간 입구
+	public static final int USER_CHARACTER = 5; // 사용자 캐릭터
+	public static final int Enemy_CHARACTER= 6; // 적 캐릭터
+	public static final int BULLET = 7; // 총알
+	
 	
 	public static final int NORTH = 0;
 	public static final int EAST = 1;
@@ -19,12 +24,41 @@ public class Maze {
 	public static final int ROWS = 20;
 	public static final int COLS = 20;
 	
+	private final int [][]initialMatrix = {
+			{1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1}, // 0
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 1
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 2
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 3
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 4
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 5
+			{1,0,0,0,0,0,1,1,1,4,1,1,1,1,0,0,0,0,0,1}, // 6
+			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,1}, // 7
+			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,1}, // 8
+			{3,0,0,0,0,0,4,2,2,2,2,2,2,4,0,0,0,0,0,3}, // 9
+			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,1}, // 10
+			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,1}, // 11
+			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,1}, // 12
+			{1,0,0,0,0,0,1,1,1,4,1,1,1,1,0,0,0,0,0,1}, // 13
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 14
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 15
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 16
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 17
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 18
+			{1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1}}; // 19
+		  // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 19
+	
+	
+	
+	
 	
 	private int[][] mazeMatrix;	// 해당 미로의 형태를 담고 있는 int형 배열. View에서 미로를 출력할 때 사용할 예정
 	private ArrayList<Coordinate>[][] graph; // 2차원 그래프 인접 리스트
-	private final Coordinate[] mazeEntrance;	// 미로의 입구 배열 
-	private final Coordinate[] userEntrance; 	// 사용자 공간의 입구의 배열
+	private final ArrayList<Coordinate> mazeEntrance;	// 미로의 입구 배열 
+	private final ArrayList<Coordinate> userEntrance; 	// 사용자 공간의 입구의 배열
+	private HashSet<Coordinate> userPlaceCoordinateSet; // 사용자 공간의 배열 객체들이 들어있는 집합. 이를 활용해서 사용자 캐릭터가 해당 공간에 들어왔는지 확인할 것이다.
+	private HashSet<Coordinate> cantChangeWallCoordinateSet; // 사용자가 바꿀 수 없는 벽 좌표들이 들어있는 집합. 이를 활용해서 사용자가 맵을 변환할 때 제한 사항을 만들것이다.
 	
+	// ------------------------생성자-------------------------//
 	public Maze() {
 		mazeMatrix = new int[ROWS][COLS]; 
 		graph = new ArrayList[ROWS][COLS];
@@ -32,19 +66,42 @@ public class Maze {
 			for(int j=0; j<COLS; ++j)
 				graph[i][j] = new ArrayList<Coordinate>();
 				
-		mazeEntrance = new Coordinate[4];		
-		// 기존에 주어줄 미로의 입구 위치 확정해야함
-		for(int i=0; i<4; ++i)
-			mazeEntrance[i] = new Coordinate();
+		mazeEntrance = new ArrayList<Coordinate>();		
+		// 기존에 주어줄 미로의 입구 위치 초기화 -> 북,동,남,서 순서대로 넣어야 함
+		mazeEntrance.add(new Coordinate(0,9)); // 북쪽 입구
+		mazeEntrance.add(new Coordinate(9,19)); // 동쪽 입구
+		mazeEntrance.add(new Coordinate(19,9)); // 남쪽 입구
+		mazeEntrance.add(new Coordinate(9,0)); // 서쪽 입구
+				
+		userEntrance = new ArrayList<Coordinate>();		
+		// 기존에 주어줄 사용자 공간의 입구 위치 초기화 -> 북,동,남,서 순서대로 넣어야 함
+		userEntrance.add(new Coordinate(6,9)); // 북쪽 입구
+		userEntrance.add(new Coordinate(9,13)); // 동쪽 입구
+		userEntrance.add(new Coordinate(13,9)); // 남쪽 입구
+		userEntrance.add(new Coordinate(9,6)); // 서쪽 입구
 		
-		userEntrance = new Coordinate[4];
-		// 기존에 주어줄 사용자의 입구 위치 확정해야함
-		for(int i=0; i<4; ++i)
-			userEntrance[i] = new Coordinate();
+		
+		// 사용자 공간을 담은 집합 생성 및 초기화
+		userPlaceCoordinateSet = new HashSet<Coordinate>();
+		for(int row=7; row<=12; ++row) {
+			for(int col=7; col<=12; ++col)
+				userPlaceCoordinateSet.add(new Coordinate(row,col));
+		}
+		
+		// 사용자가 변환할 수 없는 벽들의 좌표를 담은 집합 생성 및 초기화
+		cantChangeWallCoordinateSet = new HashSet<Coordinate>();
+		for(int row=0; row<Maze.ROWS; ++row) {
+			for(int col=0; col<Maze.COLS; ++col) {
+				if(mazeMatrix[row][col] == Maze.WALL) // 초기 벽을 만나면
+					cantChangeWallCoordinateSet.add(new Coordinate(row,col));
+			}
+		}
+		
+		
 	}
+	// -------------------------------------------------//
 	
-	
-	//---------------getter/setter---------------
+	//---------------getter/setter--------------- //
 	// 미로의 상태(벽, 길, 사용자 공간)를 설정하는 함수
 	public void setMazeMatrix(int row, int col, int state) throws Exception{
 		if(row<0 || row>=ROWS || col<0 || col>=COLS) {
@@ -57,6 +114,40 @@ public class Maze {
 	public int[][] getMazeMatrix(){
 		return mazeMatrix;
 	}
+	
+	
+	
+	//----------------public void initMazeMatrix()------------------------
+	// int형 2차원 배열 mazeMatrix를 기존 상태로 초기화 하는 함수
+	// 이 함수를 호출하고 나면 이후에 buildGraph()를 필히 호출해야 함
+	public void initMazeMatrix() {
+		for(int row=0; row<Maze.ROWS; ++row) {
+			// (복사할 원본 배열, 원본 배열에서 복사를 시작할 위치, 복사 대상 배열, 복사 대상 배열에서 붙여넣을 위치, 복사할 요소의 개수)
+			System.arraycopy(initialMatrix[row], 0, mazeMatrix, 0, Maze.COLS);
+		}
+	}
+	
+	
+	//----------------public boolean isInUserPlace()------------------------
+	// 인자로 받은 현재 좌표가 사용자 공간에 존재하는지 확인하는 함수
+	// 해당 좌표가 사용자 공간에 존재하면 true, 존재하지 않으면 false 반환
+	public boolean isInUserPlace(Coordinate currentCoordinate) {
+		// 사용자 공간의 좌표들을 모아둔 집합에 해당 좌표가 포함되는지 확인한다.
+		return userPlaceCoordinateSet.contains(currentCoordinate);
+	}
+	
+	
+	
+	//----------------public boolean canChangeItCoordinateState()------------------------
+	// 인자로 받은 해당 좌표가 상태를 바꿀 수 있는 좌표인지 확인하는 함수
+	// 해당 좌표가 상태를(벽으로) 바꿀 수 있으면 true, 바꿀 수 없으면 false 반환
+	public boolean canChangeItCoordinateState(Coordinate selectedCoordinate) {
+		// 사용자 공간이나 바꿀 수 없는 벽을 선택하지 않았다면 true 반환
+		return !(isInUserPlace(selectedCoordinate) || cantChangeWallCoordinateSet.contains(selectedCoordinate));
+	}
+	
+	
+	
 	//----------------public void buildGraph()------------------------
 	// mazeMatrix를 기반으로 그래프를 인접리스트로 build하는 함수
 	public void buildGraph() {
@@ -65,7 +156,7 @@ public class Maze {
 				switch(mazeMatrix[row][col]) {
 				case WALL:
 				case USER_PLACE:
-					graph[row][col].clear(); // 사용자 공간이거나 벽이면 해당
+					graph[row][col].clear(); // 사용자 공간이거나 벽이면 해당 인덱스의 리스트 전부 비우기
 					break;
 				case PATH:
 				case WALL_ENTRANCE:
@@ -76,7 +167,7 @@ public class Maze {
 			}
 		}
 	}
-		// 해당 좌표에 연결되어있는 리스트를 그래프에 설정해주는 함수
+		// 해당 좌표에 연결되어있는 좌표를 그래프에 추가해주는 함수
 		private void buildGraphList(int row, int col) {
 			if(row-1>=0 && row-1<ROWS && canGoCoordinate(row-1,col)) // 북 검사 
 				graph[row][col].add(new Coordinate(row-1,col));
@@ -163,10 +254,7 @@ public class Maze {
 			}
 			shortestPath.reversed();
 		}
-	
-	
-	
-	// userEntrance까지 찾아서 도착했다면, 사용자 공간 안에서 user에게 실시간으로 다가가야 한다.	
+		
 	
 	
 }
