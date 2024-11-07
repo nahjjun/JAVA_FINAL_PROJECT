@@ -35,4 +35,13 @@ public class Coordinate {
 	public Coordinate getPrevCoordinate() {
 		return this.prevCoordinate;
 	}
+	
+	@Override
+	public boolean equals(Object obj) {
+		if(this == obj) return true;
+		if(obj==null || getClass() != obj.getClass()) return false; // obj가 null이거나 클래스가 같지 않으면 false return
+		Coordinate other = (Coordinate) obj;
+		return row==other.row && col==other.col;
+	}
+	
 }

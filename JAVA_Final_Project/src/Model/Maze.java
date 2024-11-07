@@ -1,5 +1,6 @@
 package Model;
 
+import java.awt.Color;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -15,6 +16,11 @@ public class Maze {
 	public static final int Enemy_CHARACTER= 6; // 적 캐릭터
 	public static final int BULLET = 7; // 총알
 	
+	public static final Color PATH_COLOR = Color.white;
+	public static final Color WALL_COLOR = Color.black;
+	public static final Color USERPLACE_COLOR = Color.yellow;
+	public static final Color ENTRANCE_COLOR = Color.blue;
+	
 	
 	public static final int NORTH = 0;
 	public static final int EAST = 1;
@@ -24,7 +30,7 @@ public class Maze {
 	public static final int ROWS = 20;
 	public static final int COLS = 20;
 	
-	private final int [][]initialMatrix = {
+	private static final int [][]initialMatrix = {
 			{1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1}, // 0
 			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 1
 			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 2
@@ -135,7 +141,10 @@ public class Maze {
 		// 사용자 공간의 좌표들을 모아둔 집합에 해당 좌표가 포함되는지 확인한다.
 		return userPlaceCoordinateSet.contains(currentCoordinate);
 	}
-	
+	public boolean isInUserPlace(int row, int col) {
+		// 사용자 공간의 좌표들을 모아둔 집합에 해당 좌표가 포함되는지 확인한다.
+		return userPlaceCoordinateSet.contains(new Coordinate(row,col));
+	}
 	
 	
 	//----------------public boolean canChangeItCoordinateState()------------------------
@@ -145,7 +154,11 @@ public class Maze {
 		// 사용자 공간이나 바꿀 수 없는 벽을 선택하지 않았다면 true 반환
 		return !(isInUserPlace(selectedCoordinate) || cantChangeWallCoordinateSet.contains(selectedCoordinate));
 	}
-	
+	public boolean canChangeItCoordinateState(int row, int col) {
+		Coordinate selectedCoordinate = new Coordinate(row,col);
+		// 사용자 공간이나 바꿀 수 없는 벽을 선택하지 않았다면 true 반환
+		return !(isInUserPlace(selectedCoordinate) || cantChangeWallCoordinateSet.contains(selectedCoordinate));
+	}
 	
 	
 	//----------------public void buildGraph()------------------------
