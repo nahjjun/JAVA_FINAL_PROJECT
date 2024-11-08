@@ -23,44 +23,49 @@ public class StartPage extends JPanel{
 	private JPanel mazePanel; // 미로를 둘 패널
 	private JPanel userInterfacePanel; // 사용자 인터페이스 패널
 	
-	private JButton[][] mazeButtons; // 사용자가 만들 맵
+	private MazeButton[][] mazeButtons; // 사용자가 만들 맵
 	private JButton gameStartButton; // 게임 시작 버튼
 	private JButton makeAgainButton; // 맵을 다시 만들 버튼
 	
 	
 	public StartPage(Model model) {	
-		this.model = model;
-		this.setLayout(new BorderLayout());
-		
-		// 각 패널들 초기화 및 레이아웃 설정
-		mazePanel = new JPanel();
-		mazePanel.setPreferredSize(new Dimension(MAZE_PANEL_WIDTH, MAZE_PANEL_HEIGHT));
-		mazePanel.setLayout(new GridLayout(20,20,0,0));
-		
-		userInterfacePanel = new JPanel();
-		userInterfacePanel.setPreferredSize(new Dimension(USER_INTERFACE_PANEL_WIDTH, USER_INTERFACE_PANEL_HEIGHT));
-		userInterfacePanel.setLayout(new FlowLayout());
-		
-		// mazePanel에 넣을 JButton들 메모리 할당 및 mazePanel에 add
-		mazeButtons = new JButton[Maze.ROWS][Maze.COLS];
-		for(int row=0; row<Maze.ROWS; ++row) {
-			for(int col=0; col<Maze.COLS; ++col) {
-				mazeButtons[row][col] = new JButton();
-				mazePanel.add(mazeButtons[row][col]);
+		try {
+			this.model = model;
+			this.setLayout(new BorderLayout());
+			
+			// 각 패널들 초기화 및 레이아웃 설정
+			mazePanel = new JPanel();
+			mazePanel.setPreferredSize(new Dimension(MAZE_PANEL_WIDTH, MAZE_PANEL_HEIGHT));
+			mazePanel.setLayout(new GridLayout(20,20,0,0));
+			
+			userInterfacePanel = new JPanel();
+			userInterfacePanel.setPreferredSize(new Dimension(USER_INTERFACE_PANEL_WIDTH, USER_INTERFACE_PANEL_HEIGHT));
+			userInterfacePanel.setLayout(new FlowLayout());
+			
+			// mazePanel에 넣을 JButton들 메모리 할당 및 mazePanel에 add
+			mazeButtons = new MazeButton[Maze.ROWS][Maze.COLS];
+			for(int row=0; row<Maze.ROWS; ++row) {
+				for(int col=0; col<Maze.COLS; ++col) {
+					mazeButtons[row][col] = new MazeButton(row,col);
+					mazePanel.add(mazeButtons[row][col]);
+				}
 			}
+			// 각 버튼의 색깔 재설정
+			updateMazeButtonsColor();
+			
+			// 사용자 인터페이스 공간에 넣을 데이터들 초기화 및 add
+			gameStartButton = new JButton("게임 시작");
+			makeAgainButton = new JButton("맵 다시 만들기");
+			userInterfacePanel.add(gameStartButton);
+			userInterfacePanel.add(makeAgainButton);
+			
+			// StartPage JPanel에 해당 패널들(mazePanel, userInterfacePanel) 추가
+			add(mazePanel, BorderLayout.CENTER);
+			add(userInterfacePanel, BorderLayout.SOUTH);
+			
+		}catch(Exception e) {
+			System.err.println(e.getMessage());
 		}
-		// 각 버튼의 색깔 재설정
-		updateMazeButtonsColor();
-		
-		// 사용자 인터페이스 공간에 넣을 데이터들 초기화 및 add
-		gameStartButton = new JButton("게임 시작");
-		makeAgainButton = new JButton("맵 다시 만들기");
-		userInterfacePanel.add(gameStartButton);
-		userInterfacePanel.add(makeAgainButton);
-		
-		// StartPage JPanel에 해당 패널들(mazePanel, userInterfacePanel) 추가
-		add(mazePanel, BorderLayout.CENTER);
-		add(userInterfacePanel, BorderLayout.SOUTH);
 	}
 	
 	
@@ -84,17 +89,17 @@ public class StartPage extends JPanel{
 			for(int col=0; col<Maze.COLS; ++col) {
 				switch(model.getMaze().getMazeMatrix()[row][col]) {
 				case Maze.PATH:
-					mazeButtons[row][col].setBackground(Maze.PATH_COLOR);
+					mazeButtons[row][col].setBackground(View.PATH_COLOR);
 					break;
 				case Maze.WALL:
-					mazeButtons[row][col].setBackground(Maze.WALL_COLOR);
+					mazeButtons[row][col].setBackground(View.WALL_COLOR);
 					break;
 				case Maze.USER_PLACE:
-					mazeButtons[row][col].setBackground(Maze.USERPLACE_COLOR);
+					mazeButtons[row][col].setBackground(View.USERPLACE_COLOR);
 					break;
 				case Maze.USER_ENTRANCE:
 				case Maze.WALL_ENTRANCE:
-					mazeButtons[row][col].setBackground(Maze.ENTRANCE_COLOR);
+					mazeButtons[row][col].setBackground(View.ENTRANCE_COLOR);
 					break;
 				}
 			}

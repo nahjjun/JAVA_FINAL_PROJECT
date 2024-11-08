@@ -2,6 +2,18 @@ package View;
 
 import javax.swing.JPanel;
 
-public class GamePage extends JPanel {
+import Model.Model;
 
+public class GamePage extends JPanel {
+	private Model model;
+	
+	
+	public GamePage(Model model) {
+		this.model = model;
+		
+		
+		
+	}
+	
+	
 }

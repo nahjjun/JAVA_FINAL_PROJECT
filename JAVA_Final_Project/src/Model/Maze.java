@@ -16,10 +16,7 @@ public class Maze {
 	public static final int Enemy_CHARACTER= 6; // 적 캐릭터
 	public static final int BULLET = 7; // 총알
 	
-	public static final Color PATH_COLOR = Color.white;
-	public static final Color WALL_COLOR = Color.black;
-	public static final Color USERPLACE_COLOR = Color.yellow;
-	public static final Color ENTRANCE_COLOR = Color.blue;
+	
 	
 	
 	public static final int NORTH = 0;
@@ -67,6 +64,8 @@ public class Maze {
 	// ------------------------생성자-------------------------//
 	public Maze() {
 		mazeMatrix = new int[ROWS][COLS]; 
+		initMazeMatrix();
+		
 		graph = new ArrayList[ROWS][COLS];
 		for(int i=0; i<ROWS; ++i)
 			for(int j=0; j<COLS; ++j)
@@ -98,7 +97,7 @@ public class Maze {
 		cantChangeWallCoordinateSet = new HashSet<Coordinate>();
 		for(int row=0; row<Maze.ROWS; ++row) {
 			for(int col=0; col<Maze.COLS; ++col) {
-				if(mazeMatrix[row][col] == Maze.WALL) // 초기 벽을 만나면
+				if(initialMatrix[row][col] == Maze.WALL) // 초기 벽을 만나면
 					cantChangeWallCoordinateSet.add(new Coordinate(row,col));
 			}
 		}
@@ -111,7 +110,7 @@ public class Maze {
 	// 미로의 상태(벽, 길, 사용자 공간)를 설정하는 함수
 	public void setMazeMatrix(int row, int col, int state) throws Exception{
 		if(row<0 || row>=ROWS || col<0 || col>=COLS) {
-			throw new Exception("Maze/setMazeMatrix()/잘못된 row/col값을 입력했습니다.");
+			throw new Exception("Model/Maze/setMazeMatrix()/잘못된 row/col값을 입력했습니다.");
 		}
 		mazeMatrix[row][col] = state;
 	}
@@ -128,8 +127,9 @@ public class Maze {
 	// 이 함수를 호출하고 나면 이후에 buildGraph()를 필히 호출해야 함
 	public void initMazeMatrix() {
 		for(int row=0; row<Maze.ROWS; ++row) {
-			// (복사할 원본 배열, 원본 배열에서 복사를 시작할 위치, 복사 대상 배열, 복사 대상 배열에서 붙여넣을 위치, 복사할 요소의 개수)
-			System.arraycopy(initialMatrix[row], 0, mazeMatrix, 0, Maze.COLS);
+			for(int col=0; col<Maze.COLS; ++col) {
+				mazeMatrix[row][col] = initialMatrix[row][col];
+			}
 		}
 	}
 	

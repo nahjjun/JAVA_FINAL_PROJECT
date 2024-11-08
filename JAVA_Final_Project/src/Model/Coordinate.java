@@ -1,5 +1,7 @@
 package Model;
 
+import java.util.Objects;
+
 public class Coordinate {
 	private int row,col;
 	private Coordinate prevCoordinate; // 경로 탐색을 위해 각 Coordinate 객체의 이전에 연결된 객체의 주소
@@ -43,5 +45,8 @@ public class Coordinate {
 		Coordinate other = (Coordinate) obj;
 		return row==other.row && col==other.col;
 	}
-	
+	@Override
+	public int hashCode() {
+		return Objects.hash(row, col);
+	}
 }
