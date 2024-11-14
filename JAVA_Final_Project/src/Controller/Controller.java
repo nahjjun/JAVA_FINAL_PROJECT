@@ -2,6 +2,7 @@ package Controller;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
+import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -48,19 +49,26 @@ public class Controller {
 
 	// ---------------- StartPage 리스너 ---------------- // 
 	// GameStartButton이 눌렸을 때 실행될 이벤트 리스너
-	private class GameStartButtonActionListener implements ActionListener{
-		@Override
-		public void actionPerformed(ActionEvent e) {
-			Container contentPane = view.getContentPane(); // view의 contentPane를 받아서
-			// view(JFrame)의 내용을 비우고, 레이아웃 설정 후 게임 페이지로 변환한다.
-			contentPane.removeAll();
-			contentPane.setLayout(new BorderLayout());
-			contentPane.add(new GamePage(model), BorderLayout.CENTER);
-			
-			// 게임 timer 설정? 해야함. GamePage 클래스에 구현하던지 등
-			
-		}
+	private class GameStartButtonActionListener implements ActionListener {
+	    @Override
+	    public void actionPerformed(ActionEvent e) {
+	        Container contentPane = view.getContentPane(); // view의 contentPane를 받아서
+
+	        // 기존 내용 제거 및 새 컴포넌트 추가
+	        contentPane.removeAll();
+	        GamePage gamePage = new GamePage(model);
+	        contentPane.setLayout(new BorderLayout());
+	        contentPane.add(gamePage, BorderLayout.CENTER);
+
+	        // 새롭게 추가된 패널에 대해 레이아웃을 재정비하고 화면을 다시 그리기
+	        contentPane.revalidate(); 
+	        contentPane.repaint();    
+
+	        // 게임 시작
+	        gamePage.startGame();
+	    }
 	}
+
 	
 	// MakeAgainButton이 눌렸을 때 실행될 이벤트 리스너
 	private class MakeAgainButtonActionListener implements ActionListener{

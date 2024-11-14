@@ -10,8 +10,8 @@ import Model.Model;
 
 public class View extends JFrame{
 	// View JFrame 객체의 데이터들
-	public static final int VIEW_WIDTH = 650;
-	public static final int VIEW_HEIGHT = 650;
+	public static final int VIEW_WIDTH = 700;
+	public static final int VIEW_HEIGHT = 700;
 	
 	public static final int MAZE_PANEL_WIDTH = 600;
 	public static final int MAZE_PANEL_HEIGHT = 600;
@@ -52,4 +52,5 @@ public class View extends JFrame{
 	public StartPage getStartPage() {
 		return startPage;
 	}
+	
 }
