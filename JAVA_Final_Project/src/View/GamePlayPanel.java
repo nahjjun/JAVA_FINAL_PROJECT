@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import Model.MainCharacter;
 import Model.Maze;
 import Model.Model;
 
@@ -16,8 +17,8 @@ public class GamePlayPanel extends JPanel {
 
     private Model model;
     private Timer timer;
-
-    private Graphics g;
+    private Graphics g;  
+    
     
     
     
@@ -32,25 +33,25 @@ public class GamePlayPanel extends JPanel {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         this.g = g;
-        paintMaze(g); // paintMaze()를 호출하여 미로를 그립니다.
+        paintMaze(); // paintMaze()를 호출하여 미로를 그립니다.
     }
 
     
     // --------------public void paintMaze(Graphics g) -------//
     // 미로를 그리는 함수
-    public void paintMaze(Graphics g) {
+    public void paintMaze() {
         for (int row = 0; row < Maze.ROWS; ++row) {
             for (int col = 0; col < Maze.COLS; ++col) {
                 switch (model.getMaze().getMazeMatrix()[row][col]) {
                     case Maze.WALL:
-                        printWall(g, row, col);
+                    	paintWall(row, col);
                         break;
                     case Maze.WALL_ENTRANCE:
                     case Maze.USER_ENTRANCE:
-                        printEntrance(g, row, col);
+                    	paintEntrance(row, col);
                         break;
                     case Maze.USER_PLACE:
-                        printUserPlace(g, row, col);
+                    	paintUserPlace(row, col);
                         break;
                 }
             }
@@ -58,7 +59,7 @@ public class GamePlayPanel extends JPanel {
     }
 
 	    // 벽을 그리기
-	    private void printWall(Graphics g, int row, int col) {
+	    private void paintWall(int row, int col) {
 	    	int cellLength = 10 * GRID_LENGTH;
 	        int currentRow = row * cellLength; 
 	        int currentCol = col * cellLength;
@@ -68,7 +69,7 @@ public class GamePlayPanel extends JPanel {
 	    }
 	
 	    // 출입구를 그리기
-	    private void printEntrance(Graphics g, int row, int col) {
+	    private void paintEntrance(int row, int col) {
 	        int currentRow = row * 10 * GRID_LENGTH;
 	        int currentCol = col * 10 * GRID_LENGTH;
 	
@@ -77,7 +78,7 @@ public class GamePlayPanel extends JPanel {
 	    }
 	
 	    // 사용자의 위치를 그리기
-	    private void printUserPlace(Graphics g, int row, int col) {
+	    private void paintUserPlace(int row, int col) {
 	        int currentRow = row * 10 * GRID_LENGTH;
 	        int currentCol = col * 10 * GRID_LENGTH;
 	
@@ -85,6 +86,15 @@ public class GamePlayPanel extends JPanel {
 	        g.fillRect(currentCol, currentRow, 10 * GRID_LENGTH, 10 * GRID_LENGTH);
 	    }
 
+    
+	    
+	    
+    public void paintMainCharacter() {
+    	MainCharacter mainCharacter = model.getMainCharacter();
+    	
+    	
+    	
+    }
 	    
 	    
     // -------------startGamePlay(), endGamePlay() --------------//
