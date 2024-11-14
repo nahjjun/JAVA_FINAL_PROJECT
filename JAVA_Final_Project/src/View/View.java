@@ -13,6 +13,11 @@ public class View extends JFrame{
 	public static final int VIEW_WIDTH = 650;
 	public static final int VIEW_HEIGHT = 650;
 	
+	public static final int MAZE_PANEL_WIDTH = 600;
+	public static final int MAZE_PANEL_HEIGHT = 600;
+	public static final int USER_INTERFACE_PANEL_WIDTH = 600;
+	public static final int USER_INTERFACE_PANEL_HEIGHT = 50;
+	
 	public static final Color PATH_COLOR = Color.WHITE;
 	public static final Color WALL_COLOR = Color.BLACK;
 	public static final Color USERPLACE_COLOR = Color.YELLOW;
@@ -23,7 +28,6 @@ public class View extends JFrame{
 	private Model model;
 	
 	private StartPage startPage;
-	private GamePage gamePage;
 	
 	
 	public View(Model model) {		
@@ -34,7 +38,6 @@ public class View extends JFrame{
 		
 		this.model = model;
 		startPage = new StartPage(model);
-		gamePage = new GamePage(model);
 		
 		add(startPage,BorderLayout.CENTER);
 		
@@ -48,8 +51,5 @@ public class View extends JFrame{
 	
 	public StartPage getStartPage() {
 		return startPage;
-	}
-	public GamePage getGamePage() {
-		return gamePage;
 	}
 }

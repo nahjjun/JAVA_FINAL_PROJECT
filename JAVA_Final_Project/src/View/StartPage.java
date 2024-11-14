@@ -11,16 +11,10 @@ import javax.swing.JPanel;
 import Model.Maze;
 import Model.Model;
 
-public class StartPage extends JPanel{	
-	public static final int MAZE_PANEL_WIDTH = 600;
-	public static final int MAZE_PANEL_HEIGHT = 600;
-	public static final int USER_INTERFACE_PANEL_WIDTH = 600;
-	public static final int USER_INTERFACE_PANEL_HEIGHT = 50;
-	
-	
+public class StartPage extends JPanel{		
 	private Model model; // 데이터를 받아올 model 객체
 	
-	private JPanel mazePanel; // 미로를 둘 패널
+	private JPanel gamePanel; // 미로를 둘 패널
 	private JPanel userInterfacePanel; // 사용자 인터페이스 패널
 	
 	private MazeButton[][] mazeButtons; // 사용자가 만들 맵
@@ -34,12 +28,12 @@ public class StartPage extends JPanel{
 			this.setLayout(new BorderLayout());
 			
 			// 각 패널들 초기화 및 레이아웃 설정
-			mazePanel = new JPanel();
-			mazePanel.setPreferredSize(new Dimension(MAZE_PANEL_WIDTH, MAZE_PANEL_HEIGHT));
-			mazePanel.setLayout(new GridLayout(20,20,0,0));
+			gamePanel = new JPanel();
+			gamePanel.setPreferredSize(new Dimension(View.MAZE_PANEL_WIDTH, View.MAZE_PANEL_HEIGHT));
+			gamePanel.setLayout(new GridLayout(20,20,0,0));
 			
 			userInterfacePanel = new JPanel();
-			userInterfacePanel.setPreferredSize(new Dimension(USER_INTERFACE_PANEL_WIDTH, USER_INTERFACE_PANEL_HEIGHT));
+			userInterfacePanel.setPreferredSize(new Dimension(View.USER_INTERFACE_PANEL_WIDTH, View.USER_INTERFACE_PANEL_HEIGHT));
 			userInterfacePanel.setLayout(new FlowLayout());
 			
 			// mazePanel에 넣을 JButton들 메모리 할당 및 mazePanel에 add
@@ -47,7 +41,7 @@ public class StartPage extends JPanel{
 			for(int row=0; row<Maze.ROWS; ++row) {
 				for(int col=0; col<Maze.COLS; ++col) {
 					mazeButtons[row][col] = new MazeButton(row,col);
-					mazePanel.add(mazeButtons[row][col]);
+					gamePanel.add(mazeButtons[row][col]);
 				}
 			}
 			// 각 버튼의 색깔 재설정
@@ -60,7 +54,7 @@ public class StartPage extends JPanel{
 			userInterfacePanel.add(makeAgainButton);
 			
 			// StartPage JPanel에 해당 패널들(mazePanel, userInterfacePanel) 추가
-			add(mazePanel, BorderLayout.CENTER);
+			add(gamePanel, BorderLayout.CENTER);
 			add(userInterfacePanel, BorderLayout.SOUTH);
 			
 		}catch(Exception e) {

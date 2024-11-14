@@ -7,6 +7,7 @@ import java.awt.event.ActionListener;
 
 import Model.Maze;
 import Model.Model;
+import View.GamePage;
 import View.MazeButton;
 import View.View;
 
@@ -54,7 +55,7 @@ public class Controller {
 			// view(JFrame)의 내용을 비우고, 레이아웃 설정 후 게임 페이지로 변환한다.
 			contentPane.removeAll();
 			contentPane.setLayout(new BorderLayout());
-			contentPane.add(view.getGamePage());
+			contentPane.add(new GamePage(model), BorderLayout.CENTER);
 			
 			// 게임 timer 설정? 해야함. GamePage 클래스에 구현하던지 등
 			
