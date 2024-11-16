@@ -22,6 +22,10 @@ public class View extends JFrame{
 	public static final Color WALL_COLOR = Color.BLACK;
 	public static final Color USERPLACE_COLOR = Color.YELLOW;
 	public static final Color ENTRANCE_COLOR = Color.BLUE;
+	
+	public static final Color MAINCHARACTER_COLOR = Color.GREEN;
+	public static final Color ENEMYCHARACTER_COLOR = Color.RED;
+	public static final Color BULLET_COLOR = Color.green;
 
 	
 	

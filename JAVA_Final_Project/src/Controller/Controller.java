@@ -2,9 +2,10 @@ package Controller;
 
 import java.awt.BorderLayout;
 import java.awt.Container;
-import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 import Model.Maze;
 import Model.Model;
@@ -32,7 +33,8 @@ public class Controller {
 			
 			
 			// ---- GamePage class 액션 리스너 할당 ---- //
-			
+			view.setFocusable(true);
+			view.addKeyListener(null);
 			
 			
 		}catch(Exception e) {
@@ -112,7 +114,14 @@ public class Controller {
 	
 	
 	// ---------------- GamePage 리스너 ---------------- // 
-	
+	public class GamePageKeyListener extends KeyAdapter{
+		@Override
+		public void keyPressed(KeyEvent e){
+			
+			
+			
+		}
+	}
 	
 	
 	

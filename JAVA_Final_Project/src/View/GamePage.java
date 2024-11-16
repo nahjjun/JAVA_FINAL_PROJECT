@@ -30,6 +30,7 @@ public class GamePage extends JPanel {
             add(gamePlayPanel, BorderLayout.CENTER);
             add(userInterfacePanel, BorderLayout.SOUTH);
 
+            startGame();
             // 레이아웃을 재정비하고 화면을 다시 그리기
             revalidate();
             repaint();

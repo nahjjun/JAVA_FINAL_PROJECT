@@ -21,7 +21,6 @@ public class GamePlayPanel extends JPanel {
     
     
     
-    
     public GamePlayPanel(Model model) {
         this.model = model;
         setLayout(null);
@@ -34,6 +33,7 @@ public class GamePlayPanel extends JPanel {
         super.paintComponent(g);
         this.g = g;
         paintMaze(); // paintMaze()를 호출하여 미로를 그립니다.
+        paintMainCharacter();
     }
 
     
@@ -88,12 +88,17 @@ public class GamePlayPanel extends JPanel {
 
     
 	    
-	    
+    // ---------- public void paintMainCharacter()-------- //
+    // 메인 캐릭터 출력 함수
     public void paintMainCharacter() {
     	MainCharacter mainCharacter = model.getMainCharacter();
+    	g.setColor(View.USERPLACE_COLOR);
+    	g.fillRect(mainCharacter.getPrevCol(), mainCharacter.getPrevRow(), mainCharacter.getWidth(), mainCharacter.getHeight());
     	
+    	g.setColor(View.MAINCHARACTER_COLOR);
+    	g.fillRect(mainCharacter.getCol(), mainCharacter.getRow(), mainCharacter.getWidth(), mainCharacter.getHeight());
     	
-    	
+    	System.out.println("메인 캐릭터 출력");
     }
 	    
 	    
@@ -117,8 +122,7 @@ public class GamePlayPanel extends JPanel {
     private class GamePlayActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-            // 게임 로직을 갱신하고 패널을 다시 그리기 위해 repaint()를 호출합니다.
-            repaint(); // 타이머 이벤트에서 repaint() 호출
+        	paintMainCharacter(); 
         }
     }
 }
