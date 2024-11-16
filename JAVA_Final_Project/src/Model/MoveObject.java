@@ -2,6 +2,8 @@ package Model;
 
 import javax.swing.JPanel;
 
+import View.GamePlayPanel;
+
 public class MoveObject {
 	protected int row ; 
 	protected int col;
@@ -48,10 +50,34 @@ public class MoveObject {
 	public void setWidth(int width) {this.width= width;}
 	
 	
-	
+	// ---- View의 GamePlayPanel의 한번에 캐릭터가 가는 좌표만큼 움직이기게 해주는 함수 ---- //
 	public void increaseRow() {
-		
-		
+		prevRow = row;
+		if(row+GamePlayPanel.GRID_LENGTH>=GamePlayPanel.MAX_ROW)
+			row = GamePlayPanel.MAX_ROW;
+		else
+			row += GamePlayPanel.GRID_LENGTH;
+	}
+	public void decreaseRow() {
+		prevRow = row;
+		if(row-GamePlayPanel.GRID_LENGTH<=0)
+			row = 0;
+		else
+			row -= GamePlayPanel.GRID_LENGTH;
+	}
+	public void increaseCol() {
+		prevCol = col;
+		if(col+GamePlayPanel.GRID_LENGTH>=GamePlayPanel.MAX_COL)
+			col = GamePlayPanel.MAX_COL;
+		else
+			col += GamePlayPanel.GRID_LENGTH;
+	}
+	public void decreaseCol() {
+		prevCol = col;
+		if(col-GamePlayPanel.GRID_LENGTH<=0)
+			col = 0;
+		else
+			col -= GamePlayPanel.GRID_LENGTH;
 	}
 	
 	

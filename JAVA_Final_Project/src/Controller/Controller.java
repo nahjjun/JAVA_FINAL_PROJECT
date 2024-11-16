@@ -7,6 +7,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.Timer;
+
+import Model.MainCharacter;
 import Model.Maze;
 import Model.Model;
 import View.GamePage;
@@ -34,7 +37,7 @@ public class Controller {
 			
 			// ---- GamePage class 액션 리스너 할당 ---- //
 			view.setFocusable(true);
-			view.addKeyListener(null);
+			view.addKeyListener(new GamePageKeyListener());
 			
 			
 		}catch(Exception e) {
@@ -114,18 +117,76 @@ public class Controller {
 	
 	
 	// ---------------- GamePage 리스너 ---------------- // 
-	public class GamePageKeyListener extends KeyAdapter{
-		@Override
-		public void keyPressed(KeyEvent e){
-			
-			
-			
-		}
+	public class GamePageKeyListener extends KeyAdapter { 
+	    private Timer timer;
+	    private String currentDirection = null; // 현재 방향 추적
+
+	    public GamePageKeyListener() {
+	        // 타이머 초기화: 하나의 리스너만 등록
+	        timer = new Timer(1000 / 60, e -> {
+	            MainCharacter mainCharacter = model.getMainCharacter();
+	            if (currentDirection != null) {
+	                switch (currentDirection) {
+	                    case "LEFT":
+	                        mainCharacter.decreaseCol();
+	                        break;
+	                    case "RIGHT":
+	                        mainCharacter.increaseCol();
+	                        break;
+	                    case "UP":
+	                        mainCharacter.decreaseRow();
+	                        break;
+	                    case "DOWN":
+	                        mainCharacter.increaseRow();
+	                        break;
+	                }
+	            }
+	        });
+	    }
+
+	    @Override
+	    public void keyPressed(KeyEvent e) {
+	        // 방향 설정
+	        switch (e.getKeyCode()) {
+	            case KeyEvent.VK_A:
+	                currentDirection = "LEFT";
+	                break;
+	            case KeyEvent.VK_D:
+	                currentDirection = "RIGHT";
+	                break;
+	            case KeyEvent.VK_W:
+	                currentDirection = "UP";
+	                break;
+	            case KeyEvent.VK_S:
+	                currentDirection = "DOWN";
+	                break;
+	        }
+	        MainCharacter mainCharacter = model.getMainCharacter();
+	        if (!timer.isRunning()) {
+	            timer.start(); // 타이머 시작
+	            System.out.println((mainCharacter.getRow()) +", " + (mainCharacter.getCol()));
+	        }
+	    }
+
+	    @Override
+	    public void keyReleased(KeyEvent e) {
+	        // 방향 제거
+	        switch (e.getKeyCode()) {
+	            case KeyEvent.VK_A:
+	            case KeyEvent.VK_D:
+	            case KeyEvent.VK_W:
+	            case KeyEvent.VK_S:
+	                currentDirection = null;
+	                break;
+	        }
+
+	        if (currentDirection == null && timer.isRunning()) {
+	            timer.stop(); // 타이머 중지
+	            System.out.println("key 떼짐");
+	        }
+	    }
 	}
-	
-	
-	
-	
+
 	
 	
 	
