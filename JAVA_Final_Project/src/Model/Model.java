@@ -10,8 +10,8 @@ public class Model {
 	
 	public Model() {
 		maze = new Maze();
-		mainCharacter = new MainCharacter();
-	}
+		mainCharacter = new MainCharacter(this);
+	}          
 	
 	public Maze getMaze() {
 		return maze;

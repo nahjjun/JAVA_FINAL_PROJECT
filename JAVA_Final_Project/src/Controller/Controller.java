@@ -37,7 +37,7 @@ public class Controller {
 			
 			// ---- GamePage class 액션 리스너 할당 ---- //
 			view.setFocusable(true);
-			view.addKeyListener(new GamePageKeyListener());
+			view.addKeyListener(new MainCharacterMoveKeyListener());
 			
 			
 		}catch(Exception e) {
@@ -117,11 +117,11 @@ public class Controller {
 	
 	
 	// ---------------- GamePage 리스너 ---------------- // 
-	public class GamePageKeyListener extends KeyAdapter { 
+	public class MainCharacterMoveKeyListener extends KeyAdapter { 
 	    private Timer timer;
 	    private String currentDirection = null; // 현재 방향 추적
 
-	    public GamePageKeyListener() {
+	    public MainCharacterMoveKeyListener() {
 	        // 타이머 초기화: 하나의 리스너만 등록
 	        timer = new Timer(1000 / 60, e -> {
 	            MainCharacter mainCharacter = model.getMainCharacter();
