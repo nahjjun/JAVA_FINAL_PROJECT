@@ -1,6 +1,5 @@
 package Model;
 
-import java.awt.Color;
 import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.HashSet;
@@ -165,7 +164,8 @@ public class Maze {
 	// mazeMatrix를 기반으로 그래프를 인접리스트로 build하는 함수
 	public void buildGraph() {
 		for(int row=0; row<ROWS; ++row) {
-			for(int col=0; col<COLS; ++col) {	
+			for(int col=0; col<COLS; ++col) {
+				graph[row][col].clear();
 				switch(mazeMatrix[row][col]) {
 				case WALL:
 				case USER_PLACE:
@@ -179,23 +179,29 @@ public class Maze {
 				}
 			}
 		}
+		System.out.println("그래프가 rebuild되었습니다.");
 	}
 		// 해당 좌표에 연결되어있는 좌표를 그래프에 추가해주는 함수
 		private void buildGraphList(int row, int col) {
-			if(row-1>=0 && row-1<ROWS && canGoCoordinate(row-1,col)) // 북 검사 
-				graph[row][col].add(new Coordinate(row-1,col));
-			if(row+1>=0 && row+1<ROWS && canGoCoordinate(row+1,col)) // 남 검사
-				graph[row][col].add(new Coordinate(row+1,col));
-			if(col+1>=0 && col+1<COLS && canGoCoordinate(row,col+1)) // 동 검사
-				graph[row][col].add(new Coordinate(row,col+1));
-			if(col-1>=0 && col-1<COLS && canGoCoordinate(row,col-1)) // 서 검사
-				graph[row][col].add(new Coordinate(row,col-1));
+			if (row - 1 >= 0 && canGoCoordinate(row - 1, col)) {
+				graph[row][col].add(new Coordinate(row - 1, col));
+			}
+			if (row + 1 < ROWS && canGoCoordinate(row + 1, col)) {
+				graph[row][col].add(new Coordinate(row + 1, col));
+			}
+			if (col + 1 < COLS && canGoCoordinate(row, col + 1)) {
+				graph[row][col].add(new Coordinate(row, col + 1));
+			}
+			if (col - 1 >= 0 && canGoCoordinate(row, col - 1)) {
+				graph[row][col].add(new Coordinate(row, col - 1));
+			}
 		}
+
 		// 해당 좌표로 갈 수 있는 지 확인하는 함수
 		private boolean canGoCoordinate(int row, int col) {
 			return mazeMatrix[row][col]==PATH || mazeMatrix[row][col]==WALL_ENTRANCE || mazeMatrix[row][col]==USER_ENTRANCE;
 		}
-	
+	 // 
 	
 	//--------------public ArrayList<Coordinate> getShortestPath()--------------------------
 	// 시작 좌표를 입력하면, 해당 좌표를 기준으로 userEntrance들 중에서 가장 가까운 userEntrance로 가는 경로를 ArrayList로 반환해주는 함수 
@@ -208,11 +214,12 @@ public class Maze {
 		for(Coordinate destinationCoordinate:userEntrance) {
 			ArrayList<Coordinate> path = new ArrayList<>();
 			int pathInt = bfsShortestPath(startCoordinate, destinationCoordinate, path);
-			if(pathInt<shortestPathInt) { // 새로 찾은 길이 기존의 길보다 짧으면 경로 최신화
+			if(pathInt != -1 && pathInt<shortestPathInt) { // 새로 찾은 길이 기존의 길보다 짧으면 경로 최신화
 				shortestPathInt = pathInt;
 				shortestPath = path;
 			}
 		}
+		
 		return shortestPath; 
 	}
 	
@@ -224,6 +231,7 @@ public class Maze {
 				throw new Exception("Maze/bfsShortestPath()/인자로 받은 목적지 좌표값이 null입니다.");
 			else if(shortestPath==null)
 				throw new Exception("Maze/bfsShortestPath()/인자로 받은 shortestPath값이 null입니다.");
+			
 			
 			int[][] distance = new int[ROWS][COLS]; // 시작 coordinate에서 각 좌표까지 걸리는 거리를 저장할 2차원 배열
 			boolean[][] visited = new boolean[ROWS][COLS];
@@ -241,13 +249,15 @@ public class Maze {
 				currentRow = current.getRow();
 				currentCol = current.getCol();
 				currentDistance = distance[currentRow][currentCol];
-				
+
 				// 목적지에 도착하면 거리 반환
 				if(current.equals(destinationCoordinate)) {
-					rebuildPath(destinationCoordinate, shortestPath); // 도착 좌표를 기준으로 최단거리 경로를 rebuild해준다.
+					
+					rebuildPath(current, shortestPath); // 도착 좌표를 기준으로 최단거리 경로를 rebuild해준다.
 					return currentDistance;
 				}
 				for(Coordinate next:graph[currentRow][currentCol]) {
+					
 					if(!visited[next.getRow()][next.getCol()]) {
 						visited[next.getRow()][next.getCol()] = true; // 방문처리
 						queue.add(next);
@@ -257,6 +267,7 @@ public class Maze {
 					}
 				}
 			}
+			
 			return -1; // 목표 노드에 도달 못하면 -1을 반환한다.		
 		}
 		// 도착 좌표를 기준으로 거슬러 올라가며 최단거리 상세 경로를 rebuild해주는 함수   
@@ -264,6 +275,7 @@ public class Maze {
 			Coordinate current = destinationCoordinate;
 			while(current.getPrevCoordinate()!=null) {
 				shortestPath.add(current);
+				current = current.getPrevCoordinate(); 
 			}
 			shortestPath.reversed();
 		}

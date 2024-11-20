@@ -28,7 +28,6 @@ public class View extends JFrame{
 	public static final Color BULLET_COLOR = Color.green;
 
 	
-	
 	private Model model;
 	
 	private StartPage startPage;

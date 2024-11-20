@@ -3,10 +3,12 @@ package View;
 import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import Model.EnemyCharacter;
 import Model.MainCharacter;
 import Model.Maze;
 import Model.Model;
@@ -17,7 +19,11 @@ public class GamePlayPanel extends JPanel {
     public static final int MAX_COL = 600; // GamePlayPanel에서 격자 기준 최대로
 
     private Model model;
-    private Timer timer;
+    private Timer timer_game;
+    
+    // ------ 적이 추가되는 타이머 ------ //  
+    private Timer timer_enemy;
+    private int enemyAddTime;
     
     
     
@@ -25,7 +31,12 @@ public class GamePlayPanel extends JPanel {
         this.model = model;
         setLayout(null);
 
-        timer = new Timer(1000 / 60, new GamePlayActionListener());
+        enemyAddTime = 5000;
+        timer_game = new Timer(1000 / 60, new GamePlayActionListener());
+        timer_enemy = new Timer(enemyAddTime, new EnemyAddActionListener());
+        
+        timer_game.start();
+        timer_enemy.start();
     }
 
     @Override
@@ -33,6 +44,7 @@ public class GamePlayPanel extends JPanel {
         super.paintComponent(g);
         paintMaze(g); // paintMaze()를 호출하여 미로를 그립니다.
         paintMainCharacter(g);
+        paintEnemyCharacter(g);
     }
 
     
@@ -96,23 +108,34 @@ public class GamePlayPanel extends JPanel {
     	
     	g.setColor(View.MAINCHARACTER_COLOR);
     	g.fillRect(mainCharacter.getCol(), mainCharacter.getRow(), mainCharacter.getWidth(), mainCharacter.getHeight());
-    	
-    	
     }
 	    
-	    
+	
+    // ---------- public void paintEnemyCharacter()-------- //
+    // 적 캐릭터 출력 함수
+    public void paintEnemyCharacter(Graphics g) {
+    	ArrayList<EnemyCharacter> enemyCharacters = model.getEnemyCharacters();
+    	for (EnemyCharacter enemy : enemyCharacters) {
+    	    g.setColor(View.PATH_COLOR);
+    	    g.fillRect(enemy.getPrevCol(), enemy.getPrevRow(), enemy.getWidth(), enemy.getHeight());
+    	    g.setColor(View.ENEMYCHARACTER_COLOR);
+    	    g.fillRect(enemy.getCol(), enemy.getRow(), enemy.getWidth(), enemy.getHeight());
+    	}    	
+    }    
+    
+    
     // -------------startGamePlay(), endGamePlay() --------------//
     // 게임 시작
     public void startGamePlay() {
-        if (!timer.isRunning()) {
-            timer.start();
+        if (!timer_game.isRunning()) {
+        	timer_game.start();
         }
     }
 
     // 게임 종료
     public void endGamePlay() {
-        if (timer.isRunning()) {
-            timer.stop();
+        if (timer_game.isRunning()) {
+        	timer_game.stop();
         }
     }
 
@@ -121,7 +144,17 @@ public class GamePlayPanel extends JPanel {
     private class GamePlayActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-        	 repaint();
+        	
+        	repaint();
         }
+    }
+    
+    
+    private class EnemyAddActionListener implements ActionListener{
+    	@Override
+    	public void actionPerformed(ActionEvent e) {
+    		model.addEnemyCharacter();
+    		--enemyAddTime;    		
+    	}
     }
 }

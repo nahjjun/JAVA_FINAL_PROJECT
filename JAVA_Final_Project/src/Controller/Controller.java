@@ -55,23 +55,17 @@ public class Controller {
 	// ---------------- StartPage 리스너 ---------------- // 
 	// GameStartButton이 눌렸을 때 실행될 이벤트 리스너
 	private class GameStartButtonActionListener implements ActionListener {
-	    @Override
-	    public void actionPerformed(ActionEvent e) {
-	        Container contentPane = view.getContentPane(); // view의 contentPane를 받아서
-
-	        // 기존 내용 제거 및 새 컴포넌트 추가
-	        contentPane.removeAll();
-	        GamePage gamePage = new GamePage(model);
-	        contentPane.setLayout(new BorderLayout());
-	        contentPane.add(gamePage, BorderLayout.CENTER);
-
-	        // 새롭게 추가된 패널에 대해 레이아웃을 재정비하고 화면을 다시 그리기
-	        contentPane.revalidate(); 
-	        contentPane.repaint();    
-
-	        // 게임 시작
-	        gamePage.startGame();
-	    }
+		@Override
+		public void actionPerformed(ActionEvent e) {
+		    Container contentPane = view.getContentPane();
+		    model.getMaze().buildGraph(); // 그래프 생성
+		    contentPane.removeAll();
+		    GamePage gamePage = new GamePage(model);
+		    contentPane.add(gamePage, BorderLayout.CENTER);
+		    contentPane.revalidate();
+		    contentPane.repaint();
+		    gamePage.startGame();
+		}
 	}
 
 	
@@ -143,51 +137,34 @@ public class Controller {
 	            }
 	        });
 	    }
-
+	    
 	    @Override
 	    public void keyPressed(KeyEvent e) {
-	        // 방향 설정
+	        String newDirection = null;
 	        switch (e.getKeyCode()) {
-	            case KeyEvent.VK_A:
-	                currentDirection = "LEFT";
-	                break;
-	            case KeyEvent.VK_D:
-	                currentDirection = "RIGHT";
-	                break;
-	            case KeyEvent.VK_W:
-	                currentDirection = "UP";
-	                break;
-	            case KeyEvent.VK_S:
-	                currentDirection = "DOWN";
-	                break;
+	            case KeyEvent.VK_A: newDirection = "LEFT"; break;
+	            case KeyEvent.VK_D: newDirection = "RIGHT"; break;
+	            case KeyEvent.VK_W: newDirection = "UP"; break;
+	            case KeyEvent.VK_S: newDirection = "DOWN"; break;
 	        }
-	        MainCharacter mainCharacter = model.getMainCharacter();
-	        if (!timer.isRunning()) {
-	            timer.start(); // 타이머 시작
-	            System.out.println((mainCharacter.getRow()) +", " + (mainCharacter.getCol()));
+	        if (newDirection != null && !newDirection.equals(currentDirection)) {
+	            currentDirection = newDirection;
+	            if (!timer.isRunning()) {
+	                timer.start();
+	            }
 	        }
 	    }
 
 	    @Override
 	    public void keyReleased(KeyEvent e) {
-	        // 방향 제거
-	        switch (e.getKeyCode()) {
-	            case KeyEvent.VK_A:
-	            case KeyEvent.VK_D:
-	            case KeyEvent.VK_W:
-	            case KeyEvent.VK_S:
-	                currentDirection = null;
-	                break;
+	        if (currentDirection != null && (
+	            e.getKeyCode() == KeyEvent.VK_A ||
+	            e.getKeyCode() == KeyEvent.VK_D ||
+	            e.getKeyCode() == KeyEvent.VK_W ||
+	            e.getKeyCode() == KeyEvent.VK_S)) {
+	            currentDirection = null;
+	            timer.stop();
 	        }
-
-	        if (currentDirection == null && timer.isRunning()) {
-	            timer.stop(); // 타이머 중지
-	            System.out.println("key 떼짐");
-	        }
-	    }
+	    }	
 	}
-
-	
-	
-	
 }
