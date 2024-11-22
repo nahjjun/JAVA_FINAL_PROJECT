@@ -4,11 +4,37 @@ import View.GamePlayPanel;
 
 public class MainCharacter extends MoveObject{
 	private Model model;
+	private int direction;
+	private int prevDirection;
+	
 	
 	public MainCharacter(Model model) {
 		super(300,300,20,20);
 		this.model = model;
+		direction = Maze.NORTH;
+		prevDirection = Maze.NORTH;
 	}
+	
+	
+	public int getRow() {
+		return row;
+	}
+	public int getCol() {
+		return col;
+	}
+	public void setDirection(int direction) throws Exception {
+		if(direction < 0 || direction >=4) throw new Exception("Model/MainCharacter/setDirection()/잘못된 방향 입력입니다.");
+		prevDirection = this.direction;
+		this.direction = direction;
+	}
+	public int getDirection() {
+		return direction;
+	}
+	
+	public int getPrevDirection() {
+		return prevDirection;
+	}
+	
 	
 	@Override
 	public void increaseRow() {

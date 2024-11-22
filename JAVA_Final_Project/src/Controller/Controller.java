@@ -113,56 +113,59 @@ public class Controller {
 	// ---------------- GamePage 리스너 ---------------- // 
 	public class MainCharacterMoveKeyListener extends KeyAdapter { 
 	    private Timer timer;
-	    private String currentDirection = null; // 현재 방향 추적
+	    private int currentDirection = -1; // 현재 방향 추적
 
 	    public MainCharacterMoveKeyListener() {
 	        // 타이머 초기화: 하나의 리스너만 등록
 	        timer = new Timer(1000 / 60, e -> {
 	            MainCharacter mainCharacter = model.getMainCharacter();
-	            if (currentDirection != null) {
-	                switch (currentDirection) {
-	                    case "LEFT":
-	                        mainCharacter.decreaseCol();
-	                        break;
-	                    case "RIGHT":
-	                        mainCharacter.increaseCol();
-	                        break;
-	                    case "UP":
-	                        mainCharacter.decreaseRow();
-	                        break;
-	                    case "DOWN":
-	                        mainCharacter.increaseRow();
-	                        break;
-	                }
-	            }
+	            switch (currentDirection) {
+                case Maze.WEST:
+                    mainCharacter.decreaseCol();
+                    break;
+                case Maze.EAST:
+                    mainCharacter.increaseCol();
+                    break;
+                case Maze.NORTH:
+                    mainCharacter.decreaseRow();
+                    break;
+                case Maze.SOUTH:
+                    mainCharacter.increaseRow();
+                    break;
+            }
 	        });
 	    }
 	    
 	    @Override
 	    public void keyPressed(KeyEvent e) {
-	        String newDirection = null;
-	        switch (e.getKeyCode()) {
-	            case KeyEvent.VK_A: newDirection = "LEFT"; break;
-	            case KeyEvent.VK_D: newDirection = "RIGHT"; break;
-	            case KeyEvent.VK_W: newDirection = "UP"; break;
-	            case KeyEvent.VK_S: newDirection = "DOWN"; break;
-	        }
-	        if (newDirection != null && !newDirection.equals(currentDirection)) {
-	            currentDirection = newDirection;
-	            if (!timer.isRunning()) {
-	                timer.start();
-	            }
-	        }
-	    }
+	    	try {
+	    		int newDirection = 0;
+		        switch (e.getKeyCode()) {
+		            case KeyEvent.VK_A: newDirection = Maze.WEST; break;
+		            case KeyEvent.VK_D: newDirection = Maze.EAST; break;
+		            case KeyEvent.VK_W: newDirection = Maze.NORTH; break;
+		            case KeyEvent.VK_S: newDirection = Maze.SOUTH; break;
+		        }
+		        if (newDirection != currentDirection) {
+		            currentDirection = newDirection;
+		            model.getMainCharacter().setDirection(currentDirection);
+		            if (!timer.isRunning()) {
+		                timer.start();
+		            }
+		        }	    		
+	    	}catch(Exception err) {
+	    		System.out.println(err.getMessage());
+	    	}
+	     }
 
 	    @Override
 	    public void keyReleased(KeyEvent e) {
-	        if (currentDirection != null && (
+	        if (currentDirection != -1 && (
 	            e.getKeyCode() == KeyEvent.VK_A ||
 	            e.getKeyCode() == KeyEvent.VK_D ||
 	            e.getKeyCode() == KeyEvent.VK_W ||
 	            e.getKeyCode() == KeyEvent.VK_S)) {
-	            currentDirection = null;
+	            currentDirection = -1;
 	            timer.stop();
 	        }
 	    }	

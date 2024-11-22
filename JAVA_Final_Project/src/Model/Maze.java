@@ -2,6 +2,7 @@ package Model;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Queue;
 
@@ -277,7 +278,7 @@ public class Maze {
 				shortestPath.add(current);
 				current = current.getPrevCoordinate(); 
 			}
-			shortestPath.reversed();
+			Collections.reverse(shortestPath);
 		}
 		
 	

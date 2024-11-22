@@ -31,7 +31,7 @@ public class GamePlayPanel extends JPanel {
         this.model = model;
         setLayout(null);
 
-        enemyAddTime = 5000;
+        enemyAddTime = 3000;
         timer_game = new Timer(1000 / 60, new GamePlayActionListener());
         timer_enemy = new Timer(enemyAddTime, new EnemyAddActionListener());
         
@@ -103,11 +103,45 @@ public class GamePlayPanel extends JPanel {
     // 메인 캐릭터 출력 함수
     public void paintMainCharacter(Graphics g) {
     	MainCharacter mainCharacter = model.getMainCharacter();
+    	// 이전 캐릭터 삭제
     	g.setColor(View.USERPLACE_COLOR);
     	g.fillRect(mainCharacter.getPrevCol(), mainCharacter.getPrevRow(), mainCharacter.getWidth(), mainCharacter.getHeight());
     	
+    	g.setColor(View.USERPLACE_COLOR);
+    	switch(mainCharacter.getPrevDirection()) {
+    	case Maze.NORTH:
+    		g.fillRect(mainCharacter.getCol()+5, mainCharacter.getRow()-5, 10, 5);
+    		break;
+    	case Maze.SOUTH:
+    		g.fillRect(mainCharacter.getCol()+5, mainCharacter.getRow(), 10, 5);
+    		break;
+    	case Maze.WEST:
+    		g.fillRect(mainCharacter.getCol()-5, mainCharacter.getRow()+5, 5, 10);
+    		break;
+    	case Maze.EAST:
+    		g.fillRect(mainCharacter.getCol(), mainCharacter.getRow()+5, 5, 10);
+    		break;
+    	}
+    	
+    	// 현재 캐릭터 출력
     	g.setColor(View.MAINCHARACTER_COLOR);
     	g.fillRect(mainCharacter.getCol(), mainCharacter.getRow(), mainCharacter.getWidth(), mainCharacter.getHeight());
+    	
+    	g.setColor(View.MAINCHARACTER_COLOR);
+    	switch(mainCharacter.getDirection()) {
+    	case Maze.NORTH:
+    		g.fillRect(mainCharacter.getCol()+5, mainCharacter.getRow()-5, 10, 5);
+    		break;
+    	case Maze.SOUTH:
+    		g.fillRect(mainCharacter.getCol()+5, mainCharacter.getRow()+mainCharacter.getHeight(), 10, 5);
+    		break;
+    	case Maze.WEST:
+    		g.fillRect(mainCharacter.getCol()-5, mainCharacter.getRow()+5, 5, 10);
+    		break;
+    	case Maze.EAST:
+    		g.fillRect(mainCharacter.getCol()+mainCharacter.getWidth(), mainCharacter.getRow()+5, 5, 10);
+    		break;
+    	}
     }
 	    
 	
@@ -122,6 +156,13 @@ public class GamePlayPanel extends JPanel {
     	    g.fillRect(enemy.getCol(), enemy.getRow(), enemy.getWidth(), enemy.getHeight());
     	}    	
     }    
+    
+    // ---------- public void paintBullet()-------- //
+    // 총알 출력 함수
+    public void paintBullet() {
+    	
+    }
+    
     
     
     // -------------startGamePlay(), endGamePlay() --------------//
@@ -144,7 +185,6 @@ public class GamePlayPanel extends JPanel {
     private class GamePlayActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
-        	
         	repaint();
         }
     }
