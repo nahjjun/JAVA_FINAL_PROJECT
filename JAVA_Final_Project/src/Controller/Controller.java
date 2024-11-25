@@ -139,14 +139,15 @@ public class Controller {
 	    @Override
 	    public void keyPressed(KeyEvent e) {
 	    	try {
-	    		int newDirection = 0;
+	    		int newDirection = -1;
 		        switch (e.getKeyCode()) {
 		            case KeyEvent.VK_A: newDirection = Maze.WEST; break;
 		            case KeyEvent.VK_D: newDirection = Maze.EAST; break;
 		            case KeyEvent.VK_W: newDirection = Maze.NORTH; break;
 		            case KeyEvent.VK_S: newDirection = Maze.SOUTH; break;
+		            case KeyEvent.VK_SPACE: model.addBullet(); break;
 		        }
-		        if (newDirection != currentDirection) {
+		        if (newDirection != currentDirection && newDirection != -1) {
 		            currentDirection = newDirection;
 		            model.getMainCharacter().setDirection(currentDirection);
 		            if (!timer.isRunning()) {

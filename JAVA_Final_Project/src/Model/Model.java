@@ -76,16 +76,16 @@ public class Model {
 		Bullet bullet = null;
 		switch(direction) {
 		case Maze.NORTH:
-			bullet = new Bullet(this, currentRow-Bullet.BULLET_SIZE-5, currentCol+(10-Bullet.BULLET_SIZE/2));
+			bullet = new Bullet(this, currentRow-Bullet.BULLET_SIZE-5, currentCol+(10-Bullet.BULLET_SIZE/2), Maze.NORTH);
 			break;
 		case Maze.SOUTH:
-			bullet = new Bullet(this, currentRow+mainCharacter.getHeight()+5, currentCol+(10-Bullet.BULLET_SIZE/2));
+			bullet = new Bullet(this, currentRow+mainCharacter.getHeight()+5, currentCol+(10-Bullet.BULLET_SIZE/2), Maze.SOUTH);
 			break;
 		case Maze.WEST:
-			bullet = new Bullet(this, currentRow+(10-Bullet.BULLET_SIZE/2), currentCol-5-Bullet.BULLET_SIZE);
+			bullet = new Bullet(this, currentRow+(10-Bullet.BULLET_SIZE/2), currentCol-5-Bullet.BULLET_SIZE, Maze.WEST);
 			break;
 		case Maze.EAST:
-			bullet = new Bullet(this, currentRow+(10-Bullet.BULLET_SIZE/2), currentCol+mainCharacter.getWidth()+5);
+			bullet = new Bullet(this, currentRow+(10-Bullet.BULLET_SIZE/2), currentCol+mainCharacter.getWidth()+5, Maze.EAST);
 			break;
 		}
 		bullet.start();

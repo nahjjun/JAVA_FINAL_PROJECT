@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import Model.Bullet;
 import Model.EnemyCharacter;
 import Model.MainCharacter;
 import Model.Maze;
@@ -45,6 +46,7 @@ public class GamePlayPanel extends JPanel {
         paintMaze(g); // paintMaze()를 호출하여 미로를 그립니다.
         paintMainCharacter(g);
         paintEnemyCharacter(g);
+        paintBullet(g);
     }
 
     
@@ -159,8 +161,14 @@ public class GamePlayPanel extends JPanel {
     
     // ---------- public void paintBullet()-------- //
     // 총알 출력 함수
-    public void paintBullet() {
-    	
+    public void paintBullet(Graphics g) {
+    	ArrayList<Bullet> bullets = model.getBullets();
+    	for (Bullet bullet : bullets) {
+    	    g.setColor(View.PATH_COLOR);
+    	    g.fillRect(bullet.getPrevCol(), bullet.getPrevRow(), bullet.getWidth(), bullet.getHeight());
+    	    g.setColor(View.BULLET_COLOR);
+    	    g.fillRect(bullet.getCol(), bullet.getRow(), bullet.getWidth(), bullet.getHeight());
+    	} 	
     }
     
     
