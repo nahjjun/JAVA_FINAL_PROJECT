@@ -4,6 +4,7 @@ import java.awt.Graphics;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
@@ -52,7 +53,7 @@ public class GamePlayPanel extends JPanel {
     
     // --------------public void paintMaze(Graphics g) -------//
     // 미로를 그리는 함수
-    public void paintMaze(Graphics g) {
+    private void paintMaze(Graphics g) {
         for (int row = 0; row < Maze.ROWS; ++row) {
             for (int col = 0; col < Maze.COLS; ++col) {
                 switch (model.getMaze().getMazeMatrix()[row][col]) {
@@ -103,7 +104,7 @@ public class GamePlayPanel extends JPanel {
 	    
     // ---------- public void paintMainCharacter()-------- //
     // 메인 캐릭터 출력 함수
-    public void paintMainCharacter(Graphics g) {
+    private void paintMainCharacter(Graphics g) {
     	MainCharacter mainCharacter = model.getMainCharacter();
     	// 이전 캐릭터 삭제
     	g.setColor(View.USERPLACE_COLOR);
@@ -149,7 +150,7 @@ public class GamePlayPanel extends JPanel {
 	
     // ---------- public void paintEnemyCharacter()-------- //
     // 적 캐릭터 출력 함수
-    public void paintEnemyCharacter(Graphics g) {
+    private void paintEnemyCharacter(Graphics g) {
     	ArrayList<EnemyCharacter> enemyCharacters = model.getEnemyCharacters();
     	for (EnemyCharacter enemy : enemyCharacters) {
     	    g.setColor(View.PATH_COLOR);
@@ -161,7 +162,7 @@ public class GamePlayPanel extends JPanel {
     
     // ---------- public void paintBullet()-------- //
     // 총알 출력 함수
-    public void paintBullet(Graphics g) {
+    private void paintBullet(Graphics g) {
     	ArrayList<Bullet> bullets = model.getBullets();
     	for (Bullet bullet : bullets) {
     	    g.setColor(View.PATH_COLOR);
@@ -188,11 +189,21 @@ public class GamePlayPanel extends JPanel {
         }
     }
 
+    
+    // ------------- MoveObject 객체들의 스레드 상태 확인 -------------- //
+    // 종료된 스레드는 배열에서 제거함으로써 그려지지 않게 한다.
+    private void updateThreadState() {
+    	ArrayList<EnemyCharacter> enemyCharacters = model.getEnemyCharacters();
+    	enemyCharacters.removeIf(enemy -> !enemy.isAlive());
+    }
+    
+    
     // ----------------GamePlayActionListener--------------------- //
     // GamePlayPanel에서 게임을 진행할 때 지정된 타이머 동안 수행할 일을 지정
     private class GamePlayActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+        	updateThreadState();
         	repaint();
         }
     }

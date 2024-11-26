@@ -9,7 +9,7 @@ public class Model {
 	private MainCharacter mainCharacter;
 	private ArrayList<EnemyCharacter> enemyCharacters;
 	private ArrayList<Bullet> bullets;
-	
+	private ArrayList<Wall> walls;
 	
 	
 	public Model() {
@@ -17,6 +17,7 @@ public class Model {
 		mainCharacter = new MainCharacter(this);
 		enemyCharacters = new ArrayList<EnemyCharacter>();
 		bullets = new ArrayList<Bullet>();
+		walls = new ArrayList<Wall>();
 	}          
 	
 	
@@ -94,7 +95,45 @@ public class Model {
 	public void deleteBullet(int index) throws Exception{
 		if(index >= bullets.size()) throw new Exception("Model/deleteBullet()/범위를 벗어난 인덱스 접근입니다");
 		bullets.remove(index);
+		
 	}
+	
+	// 사용자의 데이터를 기반으로 총알의 데미지를 최신화 하는 함수
+	public void updateBulletDamage() {
+		Bullet.setDamage(mainCharacter.getDamage());
+	}
+	
+	// --------------- Wall ---------------- //
+	public ArrayList<Wall> getWalls() {
+		return walls;
+	}
+	// 여기서 인자로 받는 행렬값은 mazeMatrix의 값이 아니라, 실제 출력되는 JFrame에서의 행렬값이다.
+	public void addWall(int row, int col) {  
+		walls.add(new Wall(row,col));
+	}
+	
+	// 게임 시작 버튼을 누르면 벽들을 전부 생성해서 모델에 set한다.
+	public void setWalls() {
+		int cellLength = 10 * GamePlayPanel.GRID_LENGTH;
+		for(int row=0; row<Maze.ROWS; ++row) {
+			for(int col=0; col<Maze.COLS; ++col) {	
+				if(maze.getMazeMatrix()[row][col] == Maze.WALL) {
+					addWall(row*cellLength, col*cellLength);
+				}
+			}
+		}
+	}
+	// 인자의 행렬은 JFrame의 행렬값이다.
+	public void deleteWall(int row, int col) {
+		Wall w = new Wall(row, col);
+		if(walls.contains(w)) {
+			walls.remove(w);
+		}
+	}
+	
+	// ------------ MainCharacter ------------ // 
+	
+	
 	
 	
 	

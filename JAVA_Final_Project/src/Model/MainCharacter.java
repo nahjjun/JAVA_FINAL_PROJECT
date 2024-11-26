@@ -7,6 +7,10 @@ public class MainCharacter extends MoveObject{
 	private int direction;
 	private int prevDirection;
 	
+	// ------ 캐릭터 데이터 ------ //  
+	private int health = 50;
+	private int damage = 1;
+	
 	
 	public MainCharacter(Model model) {
 		super(300,300,20,20);
@@ -16,6 +20,7 @@ public class MainCharacter extends MoveObject{
 	}
 	
 	
+	// ----- setter/getter ----- // 
 	public int getRow() {
 		return row;
 	}
@@ -35,7 +40,18 @@ public class MainCharacter extends MoveObject{
 		return prevDirection;
 	}
 	
+	public void setDamage(int damage) {
+		this.damage = damage;	
+	}
+	public int getDamage() {return damage;}
 	
+	public void setHealth(int health) {
+		this.health = health;	
+	}
+	public int getHealth() {return health;}
+	
+	
+	// ------ increase/decrease ----- // 
 	@Override
 	public void increaseRow() {
 		int cellLength = 10 * GamePlayPanel.GRID_LENGTH;
@@ -68,12 +84,5 @@ public class MainCharacter extends MoveObject{
 			col -= GamePlayPanel.GRID_LENGTH;
 			prevCol = col;
 		}			
-	}
-	
-	
-	
-	
-	
-	
-	
+	}	
 }

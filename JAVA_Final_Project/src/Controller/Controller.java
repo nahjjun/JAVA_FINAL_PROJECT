@@ -59,6 +59,7 @@ public class Controller {
 		public void actionPerformed(ActionEvent e) {
 		    Container contentPane = view.getContentPane();
 		    model.getMaze().buildGraph(); // 그래프 생성
+		    model.setWalls(); // 벽 객체들 생성
 		    contentPane.removeAll();
 		    GamePage gamePage = new GamePage(model);
 		    contentPane.add(gamePage, BorderLayout.CENTER);

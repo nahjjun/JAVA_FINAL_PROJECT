@@ -2,9 +2,15 @@ package Model;
 
 public class Bullet extends MoveObject{
 	private Model model;
-	private int direction; // 해당 총알이 부여받은 방향. 값이 -1이면 스레드 종료
+	private final int direction; // 해당 총알이 부여받은 방향. 값이 -1이면 스레드 종료
+	private volatile boolean canRun = true;
+	//// https://velog.io/@jhl221123/%EC%9E%90%EB%B0%94-%EB%A9%80%ED%8B%B0-%EC%8A%A4%EB%A0%88%EB%93%9C%EC%9D%98-%EB%AC%B8%EC%A0%9C%EC%99%80-%ED%95%B4%EB%B2%95-%EC%8A%A4%EB%A0%88%EB%93%9C-%EB%8F%99%EA%B8%B0%ED%99%94
 	
-	private final int moveOnce = 1;
+	// ----- 총알 데이터 ----- // 
+	private static int damage = 5;
+	private static int moveOnce = 1;
+	
+	
 	public static final int BULLET_SIZE=6;
 	
 	public Bullet(Model model, int row, int col, int direction) {
@@ -15,9 +21,9 @@ public class Bullet extends MoveObject{
 	
 	@Override
 	public void run() {
-		while (true) {
+		while (canRun) {
 	    	int i=0;
-	    	if(direction == -1) break;
+	    	if(direction == -1) canRun=false;
 	        // 총알 움직임 구현
 	        switch(direction) {
 	        case Maze.NORTH:
@@ -33,12 +39,7 @@ public class Bullet extends MoveObject{
 	        	increaseCol();
 	        	break;
 	        }
-	        // 1. 움직인 뒤 적과 부딪혔는지 확인
-	        for(MoveObject obj:model.getEnemyCharacters()) {
-	        	if(isImpacted(obj)) break;
-	        }
 	        
-	        // 2. 움직인 뒤 벽과 부딪혔는지 확인
 	        
 	        
 	        try {
@@ -48,10 +49,24 @@ public class Bullet extends MoveObject{
 	        }
 	    }		
 	}
+
+
+	// ----- setter / getter ----- //
+	public void stopRunning() {
+		canRun = false;
+	}
 	
+	public static void setDamage(int d) {
+		damage = d;	
+	}
+	public static int getDamage() {return damage;}
 	
+	public static void setMoveOnce(int m) {
+		moveOnce = m;	
+	}
+	public static int getMoveOnce() {return moveOnce;}
 	
-	
+	// ----- increase / decrease ----- //
 	public void increaseRow() {
 		prevRow = row;
 		row += moveOnce;
