@@ -16,10 +16,10 @@ import Model.Maze;
 import Model.Model;
 
 public class GamePlayPanel extends JPanel {
-    public static final int GRID_LENGTH = 3; // 캐릭터가 한 번에 움직일 수 있는 거리/격자 한 면의 길이
     public static final int MAX_ROW = 600; // GamePlayPanel에서 격자 기준 최대로
     public static final int MAX_COL = 600; // GamePlayPanel에서 격자 기준 최대로
-
+    public static final int CELL_LENGTH = MAX_ROW/20; // 격자 한 면의 길이
+    
     private Model model;
     private Timer timer_game;
     
@@ -36,7 +36,7 @@ public class GamePlayPanel extends JPanel {
         enemyAddTime = 1000;
         timer_game = new Timer(1000/60, new GamePlayActionListener());
         timer_enemy = new Timer(enemyAddTime, new EnemyAddActionListener());
-        
+        model.addEnemyCharacter();
         timer_game.start();
         timer_enemy.start();
     }
@@ -74,30 +74,29 @@ public class GamePlayPanel extends JPanel {
 
 	    // 벽을 그리기
 	    private void paintWall(Graphics g, int row, int col) {
-	    	int cellLength = 10 * GRID_LENGTH;
-	        int currentRow = row * cellLength; 
-	        int currentCol = col * cellLength;
+	        int currentRow = row * CELL_LENGTH; 
+	        int currentCol = col * CELL_LENGTH;
 	
 	        g.setColor(View.WALL_COLOR);
-	        g.fillRect(currentCol, currentRow, cellLength, cellLength);
+	        g.fillRect(currentCol, currentRow, CELL_LENGTH, CELL_LENGTH);
 	    }
 	
 	    // 출입구를 그리기
 	    private void paintEntrance(Graphics g, int row, int col) {
-	        int currentRow = row * 10 * GRID_LENGTH;
-	        int currentCol = col * 10 * GRID_LENGTH;
+	        int currentRow = row * CELL_LENGTH;
+	        int currentCol = col * CELL_LENGTH;
 	
 	        g.setColor(View.ENTRANCE_COLOR);
-	        g.fillRect(currentCol, currentRow, 10 * GRID_LENGTH, 10 * GRID_LENGTH);
+	        g.fillRect(currentCol, currentRow, CELL_LENGTH, CELL_LENGTH);
 	    }
 	
 	    // 사용자의 위치를 그리기
 	    private void paintUserPlace(Graphics g, int row, int col) {
-	        int currentRow = row * 10 * GRID_LENGTH;
-	        int currentCol = col * 10 * GRID_LENGTH;
+	        int currentRow = row * CELL_LENGTH;
+	        int currentCol = col * CELL_LENGTH;
 	
 	        g.setColor(View.USERPLACE_COLOR);
-	        g.fillRect(currentCol, currentRow, 10 * GRID_LENGTH, 10 * GRID_LENGTH);
+	        g.fillRect(currentCol, currentRow, CELL_LENGTH, CELL_LENGTH);
 	    }
 
     
@@ -199,12 +198,27 @@ public class GamePlayPanel extends JPanel {
     	bullets.removeIf(bullet -> !bullet.isAlive() || !bullet.canRun);
     }
     
+    // ------------ MainCharacter의 체력 확인 --------------- //
+    // 메인 캐릭터가 죽으면 true 반환
+    private boolean didMainCharacterDie() {
+    	if(model.getMainCharacter().getHealth() <= 0) {
+    		return true;
+    	}
+    	return false;
+    }
+    
+    
     
     // ----------------GamePlayActionListener--------------------- //
     // GamePlayPanel에서 게임을 진행할 때 지정된 타이머 동안 수행할 일을 지정
     private class GamePlayActionListener implements ActionListener {
         @Override
         public void actionPerformed(ActionEvent e) {
+        	if(didMainCharacterDie()) {
+        		timer_game.stop();
+        		timer_enemy.stop();
+        		
+        	}
         	updateThreadState();
         	repaint();
         }

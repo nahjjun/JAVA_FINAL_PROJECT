@@ -120,7 +120,9 @@ public class Maze {
 		return mazeMatrix;
 	}
 	
-	
+	public ArrayList<Coordinate> getMazeEntrance(){
+		return mazeEntrance;
+	}
 	
 	//----------------public void initMazeMatrix()------------------------
 	// int형 2차원 배열 mazeMatrix를 기존 상태로 초기화 하는 함수
@@ -169,12 +171,12 @@ public class Maze {
 				graph[row][col].clear();
 				switch(mazeMatrix[row][col]) {
 				case WALL:
-				case USER_PLACE:
 					graph[row][col].clear(); // 사용자 공간이거나 벽이면 해당 인덱스의 리스트 전부 비우기
 					break;
 				case PATH:
 				case WALL_ENTRANCE:
 				case USER_ENTRANCE:
+				case USER_PLACE:
 					buildGraphList(row, col); // 길이거나 벽/사용지공간 입구면 graph를 build시킨다.
 					break;
 				}
@@ -200,7 +202,7 @@ public class Maze {
 
 		// 해당 좌표로 갈 수 있는 지 확인하는 함수
 		private boolean canGoCoordinate(int row, int col) {
-			return mazeMatrix[row][col]==PATH || mazeMatrix[row][col]==WALL_ENTRANCE || mazeMatrix[row][col]==USER_ENTRANCE;
+			return mazeMatrix[row][col]==PATH || mazeMatrix[row][col]==WALL_ENTRANCE || mazeMatrix[row][col]==USER_ENTRANCE || mazeMatrix[row][col]==USER_PLACE;
 		}
 	 // 
 	
@@ -225,7 +227,7 @@ public class Maze {
 	}
 	
 		// 적의 현재 좌표를 기준으로, destination까지의 최단경로를 계산(BFS)하여 해당 경로를 설정하고 거리를 반환하는 함수. detination에 도착하지 못하면 -1을 반환한다.
-		private int bfsShortestPath(Coordinate startCoordinate, Coordinate destinationCoordinate, ArrayList<Coordinate> shortestPath) throws Exception{
+		public int bfsShortestPath(Coordinate startCoordinate, Coordinate destinationCoordinate, ArrayList<Coordinate> shortestPath) throws Exception{
 			if(startCoordinate==null)
 				throw new Exception("Maze/bfsShortestPath()/인자로 받은 현재 좌표값이 null입니다.");
 			else if(destinationCoordinate==null)
@@ -255,10 +257,9 @@ public class Maze {
 				if(current.equals(destinationCoordinate)) {
 					
 					rebuildPath(current, shortestPath); // 도착 좌표를 기준으로 최단거리 경로를 rebuild해준다.
-					return currentDistance;
+					break;
 				}
 				for(Coordinate next:graph[currentRow][currentCol]) {
-					
 					if(!visited[next.getRow()][next.getCol()]) {
 						visited[next.getRow()][next.getCol()] = true; // 방문처리
 						queue.add(next);
@@ -269,7 +270,7 @@ public class Maze {
 				}
 			}
 			
-			return -1; // 목표 노드에 도달 못하면 -1을 반환한다.		
+			return currentDistance;		
 		}
 		// 도착 좌표를 기준으로 거슬러 올라가며 최단거리 상세 경로를 rebuild해주는 함수   
 		private void rebuildPath(Coordinate destinationCoordinate, ArrayList<Coordinate> shortestPath) {

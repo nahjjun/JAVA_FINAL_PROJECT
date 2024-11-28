@@ -7,8 +7,10 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 
+import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
+import Model.Coordinate;
 import Model.MainCharacter;
 import Model.Maze;
 import Model.Model;
@@ -59,6 +61,15 @@ public class Controller {
 		public void actionPerformed(ActionEvent e) {
 		    Container contentPane = view.getContentPane();
 		    model.getMaze().buildGraph(); // 그래프 생성
+		    // 만약 게임이 실행될 수 없는 상황이면 다시 맵을 만들도록 설정
+		    if(!canPlayGame()) {
+		    	// 알림창을 띄울 수 있는 클래스
+		    	JOptionPane.showMessageDialog(view.getContentPane(), "길을 완전히 막도록 만들 수는 없습니다!");
+		    	model.getMaze().initMazeMatrix();
+				view.getStartPage().updateMazeButtonsColor();
+				return;
+		    }
+		    	
 		    model.setWalls(); // 벽 객체들 생성
 		    contentPane.removeAll();
 		    GamePage gamePage = new GamePage(model);
@@ -68,7 +79,21 @@ public class Controller {
 		    gamePage.startGame();
 		}
 	}
-
+		// 해당 게임이 실행될 수 있는지 확인하는 함수. 적 캐릭터가 path를 가지고 있지 않으면 false
+		private boolean canPlayGame() {
+			for(Coordinate entrance : model.getMaze().getMazeEntrance()) {
+				try {
+					if(model.getMaze().getShortestPath(entrance).isEmpty())
+						return false;
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+			}
+			return true;
+		}
+	
+	
+	
 	
 	// MakeAgainButton이 눌렸을 때 실행될 이벤트 리스너
 	private class MakeAgainButtonActionListener implements ActionListener{

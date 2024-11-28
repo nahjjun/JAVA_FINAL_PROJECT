@@ -64,17 +64,13 @@ public abstract class MoveObject extends Thread {
 	        Rectangle thisRect = new Rectangle(this.col, this.row, this.width, this.height);
 	        Rectangle objRect = new Rectangle(obj.getCol(), obj.getRow(), obj.getWidth(), obj.getHeight());
 	        // intersects() 함수는 두 Rectangle 객체가 서로 충돌했는지 확인하는 역할을 한다.
-	        boolean isImpacted = thisRect.intersects(objRect);
+	        boolean isImpacted = false;
 
 	        // 현재 사각형들이(this,obj) 충돌되지 않았다면, 이전 위치(this의 prev)와 현재 위치(obj) 사이도 검사한다.
 	        if (!isImpacted) {
 	            Rectangle thisPrevRect = new Rectangle(this.prevCol, this.prevRow, this.width, this.height);
 	            // 이전 위치와 부딪혔는지 확인한다.
 	            isImpacted = thisPrevRect.intersects(objRect);
-	        }
-	        // 
-	        if (isImpacted) {
-	            System.out.println("충돌 감지: 적 (" + this + ") & 총알 (" + obj + ")");
 	        }
 	        return isImpacted;
 	    }

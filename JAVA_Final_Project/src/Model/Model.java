@@ -36,25 +36,24 @@ public class Model {
 		synchronized (enemyCharacters) {
 			int direction = (int)(Math.random()*4);
 			int row=0, col=0;
-			int cellLength = 10 * GamePlayPanel.GRID_LENGTH;
-			int middle = 5; // 캐릭터를 길 및 셀 중간에 나올 수 있게 위치 지정해줄 변수
+			int middle = 0; // 캐릭터를 길 및 셀 중간에 나올 수 있게 위치 지정해줄 변수
 			
 			switch(direction) {
 			case Maze.NORTH:
 				row = middle;
-				col = 9 * cellLength+middle;
+				col = 9 * GamePlayPanel.CELL_LENGTH+middle;
 				break;
 			case Maze.SOUTH:
-				row = 19 * cellLength+middle;
-				col = 9 * cellLength+middle;
+				row = 19 * GamePlayPanel.CELL_LENGTH+middle;
+				col = 9 * GamePlayPanel.CELL_LENGTH+middle;
 				break;
 			case Maze.WEST:
-				row = 9 * cellLength+middle;
+				row = 9 * GamePlayPanel.CELL_LENGTH+middle;
 				col = middle;
 				break;
 			case Maze.EAST:
-				row = 9 * cellLength+middle;
-				col = 19 * cellLength+middle;
+				row = 9 * GamePlayPanel.CELL_LENGTH+middle;
+				col = 19 * GamePlayPanel.CELL_LENGTH+middle;
 				break;
 			}
 			EnemyCharacter enemy = new EnemyCharacter(this, row, col);
@@ -118,11 +117,10 @@ public class Model {
 	
 	// 게임 시작 버튼을 누르면 벽들을 전부 생성해서 모델에 set한다.
 	public void setWalls() {
-		int cellLength = 10 * GamePlayPanel.GRID_LENGTH;
 		for(int row=0; row<Maze.ROWS; ++row) {
 			for(int col=0; col<Maze.COLS; ++col) {	
 				if(maze.getMazeMatrix()[row][col] == Maze.WALL) {
-					addWall(row*cellLength, col*cellLength);
+					addWall(row*GamePlayPanel.CELL_LENGTH, col*GamePlayPanel.CELL_LENGTH);
 				}
 			}
 		}

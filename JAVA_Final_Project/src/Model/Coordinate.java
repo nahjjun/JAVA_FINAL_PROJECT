@@ -16,14 +16,12 @@ public class Coordinate {
 	}
 	
 	public void setRow(int row) throws Exception{
-		if(row<0 || row>=Maze.ROWS) throw new Exception("Coordinate/setRow()/범위를 벗어난 행 값이 입력되었습니다.");
 		this.row=row;
 	}
 	public int getRow() {
 		return row;
 	}
 	public void setCol(int col) throws Exception{
-		if(col<0 || col>=Maze.COLS) throw new Exception("Coordinate/setCol()/범위를 벗어난 열 값이 입력되었습니다.");
 		this.col=col;
 	}
 	public int getCol() {
@@ -31,7 +29,6 @@ public class Coordinate {
 	}
 	
 	public void setPrevCoordinate(Coordinate prevCoordinate) throws Exception{
-		if(prevCoordinate==null) throw new Exception("Coordinate/setPrevCoordinate()/이전 좌표 객체가 null값이 입력되었습니다.");
 		this.prevCoordinate=prevCoordinate;
 	}
 	public Coordinate getPrevCoordinate() {
