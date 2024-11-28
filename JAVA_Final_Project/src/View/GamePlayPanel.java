@@ -33,8 +33,8 @@ public class GamePlayPanel extends JPanel {
         this.model = model;
         setLayout(null);
 
-        enemyAddTime = 3000;
-        timer_game = new Timer(1000 / 60, new GamePlayActionListener());
+        enemyAddTime = 1000;
+        timer_game = new Timer(1000/60, new GamePlayActionListener());
         timer_enemy = new Timer(enemyAddTime, new EnemyAddActionListener());
         
         timer_game.start();
@@ -194,7 +194,9 @@ public class GamePlayPanel extends JPanel {
     // 종료된 스레드는 배열에서 제거함으로써 그려지지 않게 한다.
     private void updateThreadState() {
     	ArrayList<EnemyCharacter> enemyCharacters = model.getEnemyCharacters();
-    	enemyCharacters.removeIf(enemy -> !enemy.isAlive());
+    	ArrayList<Bullet> bullets = model.getBullets();
+    	enemyCharacters.removeIf(enemy -> !enemy.isAlive() || !enemy.canRun);
+    	bullets.removeIf(bullet -> !bullet.isAlive() || !bullet.canRun);
     }
     
     
@@ -212,8 +214,7 @@ public class GamePlayPanel extends JPanel {
     private class EnemyAddActionListener implements ActionListener{
     	@Override
     	public void actionPerformed(ActionEvent e) {
-    		model.addEnemyCharacter();
-    		--enemyAddTime;    		
+    		model.addEnemyCharacter();  		
     	}
     }
 }
