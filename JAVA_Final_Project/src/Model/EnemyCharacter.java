@@ -53,6 +53,11 @@ public class EnemyCharacter extends MoveObject{
 	    
 	}
 	
+	// --------- getter / setter ------------ //
+	
+	
+	
+	
 	// ------------- private void isBulletImpacted() ------------//
 	// 총알이 해당 적 객체와 부딪혔는지 확인하는 메소드. 
 	// iterator를 사용하면 더 안정적으로 해당 Bullet ArrayList에 있는 값을 수정할 수 있다.
@@ -68,6 +73,7 @@ public class EnemyCharacter extends MoveObject{
 	                iterator.remove();
 	                if(health<=0) {
 	                	this.canRun=false;
+	                	model.setRemainEnemyNum(model.getRemainEnemyNum()-1);
 	                }
 	                break;
 	            }         

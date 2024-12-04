@@ -1,14 +1,12 @@
 package View;
 
 import java.awt.Graphics;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Iterator;
 
 import javax.swing.JPanel;
 import javax.swing.Timer;
 
+import Controller.Controller;
 import Model.Bullet;
 import Model.EnemyCharacter;
 import Model.MainCharacter;
@@ -21,25 +19,38 @@ public class GamePlayPanel extends JPanel {
     public static final int CELL_LENGTH = MAX_ROW/20; // 격자 한 면의 길이
     
     private Model model;
-    private Timer timer_game;
+    private View view;
+    private Controller controller;	
     
+    private Timer timer_game;
     // ------ 적이 추가되는 타이머 ------ //  
     private Timer timer_enemy;
-    private int enemyAddTime;
     
     
-    
-    public GamePlayPanel(Model model) {
+    public GamePlayPanel(Model model, View view, Controller controller) {
         this.model = model;
+        this.view = view;
+        this.controller= controller;
+        
         setLayout(null);
-
-        enemyAddTime = 1000;
-        timer_game = new Timer(1000/60, new GamePlayActionListener());
-        timer_enemy = new Timer(enemyAddTime, new EnemyAddActionListener());
+        
+        timer_game = new Timer(1000/60, null);
+        timer_enemy = new Timer(model.getEnemyAddTime(), null);
         model.addEnemyCharacter();
-        timer_game.start();
-        timer_enemy.start();
     }
+    
+    
+    // ------------ setter / getter ------------------- //
+    
+    
+    public Timer getGameTimer() {
+    	return timer_game;
+    }
+    public Timer getEnemyTimer() {
+    	return timer_enemy;
+    }
+    
+    
 
     @Override
     protected void paintComponent(Graphics g) {
@@ -176,22 +187,22 @@ public class GamePlayPanel extends JPanel {
     // -------------startGamePlay(), endGamePlay() --------------//
     // 게임 시작
     public void startGamePlay() {
-        if (!timer_game.isRunning()) {
-        	timer_game.start();
-        }
+    	// 타이머 액션 리스너 추가
+    	controller.addTimerActionListener();
+    	timer_game.start();
+        timer_enemy.start();
     }
 
     // 게임 종료
     public void endGamePlay() {
-        if (timer_game.isRunning()) {
-        	timer_game.stop();
-        }
+    	timer_game.stop();
+    	timer_enemy.stop();
     }
 
     
     // ------------- MoveObject 객체들의 스레드 상태 확인 -------------- //
     // 종료된 스레드는 배열에서 제거함으로써 그려지지 않게 한다.
-    private void updateThreadState() {
+    public void updateThreadState() {
     	ArrayList<EnemyCharacter> enemyCharacters = model.getEnemyCharacters();
     	ArrayList<Bullet> bullets = model.getBullets();
     	enemyCharacters.removeIf(enemy -> !enemy.isAlive() || !enemy.canRun);
@@ -200,35 +211,11 @@ public class GamePlayPanel extends JPanel {
     
     // ------------ MainCharacter의 체력 확인 --------------- //
     // 메인 캐릭터가 죽으면 true 반환
-    private boolean didMainCharacterDie() {
+    public boolean didMainCharacterDie() {
     	if(model.getMainCharacter().getHealth() <= 0) {
     		return true;
     	}
     	return false;
     }
     
-    
-    
-    // ----------------GamePlayActionListener--------------------- //
-    // GamePlayPanel에서 게임을 진행할 때 지정된 타이머 동안 수행할 일을 지정
-    private class GamePlayActionListener implements ActionListener {
-        @Override
-        public void actionPerformed(ActionEvent e) {
-        	if(didMainCharacterDie()) {
-        		timer_game.stop();
-        		timer_enemy.stop();
-        		
-        	}
-        	updateThreadState();
-        	repaint();
-        }
-    }
-    
-    
-    private class EnemyAddActionListener implements ActionListener{
-    	@Override
-    	public void actionPerformed(ActionEvent e) {
-    		model.addEnemyCharacter();  		
-    	}
-    }
 }

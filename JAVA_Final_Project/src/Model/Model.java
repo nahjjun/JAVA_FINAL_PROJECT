@@ -10,6 +10,16 @@ public class Model {
 	private ArrayList<EnemyCharacter> enemyCharacters;
 	private ArrayList<Bullet> bullets;
 	private ArrayList<Wall> walls;
+	// 현재 게임 스테이지 번호를 갖고 있음
+	private int currentGameStage;
+    // 남은 적 캐릭터의 개수를 담은 데이터
+    private int remainEnemyNum;
+	// 사용자가 만들 수 있는 벽의 개수
+	private int remainWallNum;
+	// 사용자가 사용할 수 있는 총알의 개수. 이 총알은 충전형이다.
+	private int remainBulletNum;
+	// 적이 추가되는 시간
+	private int enemyAddTime;
 	
 	
 	public Model() {
@@ -18,6 +28,12 @@ public class Model {
 		enemyCharacters = new ArrayList<EnemyCharacter>();
 		bullets = new ArrayList<Bullet>();
 		walls = new ArrayList<Wall>();
+		
+		currentGameStage = 0;
+		remainEnemyNum = 0;
+		remainWallNum = 0;
+		remainBulletNum = 0;
+		enemyAddTime = 0;
 	}          
 	
 	
@@ -64,6 +80,37 @@ public class Model {
 	public void deleteEnemyCharacter(int index) throws Exception{
 		if(index >= enemyCharacters.size()) throw new Exception("Model/deleteEnemyCharacter()/범위를 벗어난 인덱스 접근입니다");
 		enemyCharacters.remove(index);
+	}
+	
+	public int getCurrentGameStage() {
+		return currentGameStage;
+	}
+	public void setCurrentGameStage(int currentGameStage) {
+		this.currentGameStage = currentGameStage;
+	}
+	public int getRemainEnemyNum() {
+		return remainEnemyNum;
+	}
+	public void setRemainEnemyNum(int remainEnemyNum) {
+		this.remainEnemyNum = remainEnemyNum;
+	}
+	public int getRemainWallNum() {
+		return remainWallNum;
+	}
+	public void setRemainWallNum(int remainWallNum) {
+		this.remainWallNum = remainWallNum;
+	}
+	public void setRemainBulletNum(int bullet) {
+		remainBulletNum = bullet;
+	}
+	public int getRemainBulletNum() {
+		return remainBulletNum;
+	}
+	public void setEnemyAddTime(int millisecond) {
+		enemyAddTime = millisecond;
+	}
+	public int getEnemyAddTime() {
+		return enemyAddTime;
 	}
 	
 	
@@ -146,4 +193,7 @@ public class Model {
 	public MainCharacter getMainCharacter() {
 		return mainCharacter;
 	}
+	
+	// -------------- Model ----------------//
+	
 }
