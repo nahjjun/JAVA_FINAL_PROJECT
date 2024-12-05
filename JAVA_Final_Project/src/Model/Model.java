@@ -23,9 +23,15 @@ public class Model {
 
 	
 	// 적이 추가되는 시간
-	private int enemyAddTime;
+	private int enemyAddTime;	
+	// 현재 증가되고 있는 시간 변수
+	private int currentEnemyAddTime;
+	
 	// 총알이 충전되는 시간
 	private int bulletAddTime;
+	// 현재 증가되고 있는 시간 변수
+	private int currentBulletAddTime;
+
 	
 	public Model() {
 		maze = new Maze();
@@ -41,8 +47,10 @@ public class Model {
 		maxBulletNum = 0;
 		
 		enemyAddTime = 0;
+		currentEnemyAddTime = 0;
+		
 		bulletAddTime = 0;
-
+		currentBulletAddTime = 0;
 	}          
 	
 	
@@ -82,7 +90,6 @@ public class Model {
 				break;
 			}
 			EnemyCharacter enemy = new EnemyCharacter(this, row, col);
-			enemy.start();
 			enemyCharacters.add(enemy);
 		}
 	}
@@ -129,12 +136,26 @@ public class Model {
 	public int getEnemyAddTime() {
 		return enemyAddTime;
 	}
+	public void setCurrentEnemyAddTime(int millisecond) {
+		currentEnemyAddTime = millisecond;
+	}
+	public int getCurrentEnemyAddTime() {
+		return currentEnemyAddTime;
+	}
+	
 	public void setBulletAddTime(int millisecond) {
 		bulletAddTime = millisecond;
 	}
 	public int getBulletAddTime() {
 		return bulletAddTime;
 	}
+	public void setCurrentBulletAddTime(int millisecond) {
+		currentBulletAddTime = millisecond;
+	}
+	public int getCurrentBulletAddTime() {
+		return currentBulletAddTime;
+	}
+	
 	
 	// -------------- Bullet ----------------- //
 	public ArrayList<Bullet> getBullets() {
@@ -164,7 +185,6 @@ public class Model {
 				bullet = new Bullet(this, currentRow+(10-Bullet.BULLET_SIZE/2), currentCol+mainCharacter.getWidth()+5, Maze.EAST);
 				break;
 			}
-			bullet.start();
 			bullets.add(bullet);	
 		}
 	}
@@ -232,5 +252,6 @@ public class Model {
 	}
 	
 	// -------------- Model ----------------//
+	
 	
 }

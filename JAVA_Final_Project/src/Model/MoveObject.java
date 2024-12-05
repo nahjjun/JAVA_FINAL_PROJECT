@@ -2,7 +2,7 @@ package Model;
 
 import java.awt.Rectangle;
 
-public abstract class MoveObject extends Thread {
+public abstract class MoveObject {
 	protected int row ; 
 	protected int col;
 	protected int prevRow;
@@ -60,20 +60,18 @@ public abstract class MoveObject extends Thread {
 	// ----------- public boolean isImpacted(MoveObject obj) ---------------- //	
 	// 각 객체들이 충돌했는지 확인하는 함수. 이 함수가 문제였음
 	public boolean isImpacted(MoveObject obj) {
-	    synchronized (this) {
-	        Rectangle thisRect = new Rectangle(this.col, this.row, this.width, this.height);
-	        Rectangle objRect = new Rectangle(obj.getCol(), obj.getRow(), obj.getWidth(), obj.getHeight());
-	        // intersects() 함수는 두 Rectangle 객체가 서로 충돌했는지 확인하는 역할을 한다.
-	        boolean isImpacted = false;
+        Rectangle thisRect = new Rectangle(this.col, this.row, this.width, this.height);
+        Rectangle objRect = new Rectangle(obj.getCol(), obj.getRow(), obj.getWidth(), obj.getHeight());
+        // intersects() 함수는 두 Rectangle 객체가 서로 충돌했는지 확인하는 역할을 한다.
+        boolean isImpacted = false;
 
-	        // 현재 사각형들이(this,obj) 충돌되지 않았다면, 이전 위치(this의 prev)와 현재 위치(obj) 사이도 검사한다.
-	        if (!isImpacted) {
-	            Rectangle thisPrevRect = new Rectangle(this.prevCol, this.prevRow, this.width, this.height);
-	            // 이전 위치와 부딪혔는지 확인한다.
-	            isImpacted = thisPrevRect.intersects(objRect);
-	        }
-	        return isImpacted;
-	    }
+        // 현재 사각형들이(this,obj) 충돌되지 않았다면, 이전 위치(this의 prev)와 현재 위치(obj) 사이도 검사한다.
+        if (!isImpacted) {
+            Rectangle thisPrevRect = new Rectangle(this.prevCol, this.prevRow, this.width, this.height);
+            // 이전 위치와 부딪혔는지 확인한다.
+            isImpacted = thisPrevRect.intersects(objRect);
+        }
+        return isImpacted;
 	}
 
 	

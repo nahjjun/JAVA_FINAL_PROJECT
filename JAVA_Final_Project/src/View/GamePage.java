@@ -72,22 +72,29 @@ public class GamePage extends JPanel {
     private void setDifficulty() {
     	// GamePage는 ReadyPage에서 start 버튼을 누를 때마다 새로 생성되므로, 생성자에서 해당 값(스테이지, 적 개수)을 초기화 시켜준다.
     	int currentStage = model.getCurrentGameStage();
-    	model.setBulletAddTime(1000);
+    	// 증가시킬 time 변수 0으로 초기화
+    	model.setCurrentBulletAddTime(0);
+    	model.setCurrentEnemyAddTime(0);
+    	
+    	// 1초마다 총알 리필
+    	model.setBulletAddTime(60 /2); 
     	model.setMaxBulletNum(20);
     	model.setRemainBulletNum(model.getMaxBulletNum());
     	
+    	
     	switch(currentStage) {
     	case 1:
-    		model.setRemainEnemyNum(50);
-    		model.setEnemyAddTime(500);
+    		model.setRemainEnemyNum(10);
+    		// 0.5초마다 적 추가
+    		model.setEnemyAddTime(60/2);
     		break;
     	case 2:
-    		model.setRemainEnemyNum(100);
-    		model.setEnemyAddTime(500);
+    		model.setRemainEnemyNum(10);
+    		model.setEnemyAddTime(60/3);
     		break;
     	case 3:
-    		model.setRemainEnemyNum(200);
-    		model.setEnemyAddTime(250);
+    		model.setRemainEnemyNum(10);
+    		model.setEnemyAddTime(10);
     		break;
     	}
     }

@@ -10,7 +10,9 @@ import java.awt.event.KeyEvent;
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
 
+import Model.Bullet;
 import Model.Coordinate;
+import Model.EnemyCharacter;
 import Model.MainCharacter;
 import Model.Maze;
 import Model.Model;
@@ -63,8 +65,6 @@ public class Controller {
 	public void addTimerActionListener() {
 		// ---- GamePlayPanel class 액션 리스너 할당 ---- //
 		view.getGamePage().getGamePlayPanel().getGameTimer().addActionListener(new GamePlayActionListener());;
-		view.getGamePage().getGamePlayPanel().getEnemyTimer().addActionListener(new EnemyAddActionListener());
-		view.getGamePage().getGamePlayPanel().getBulletTimer().addActionListener(new BulletAddActionListener());
 	}
 	
 	// ---------------- StartPage 리스너 ---------------- //
@@ -246,17 +246,23 @@ public class Controller {
         	GamePage gamePage = view.getGamePage();
         	GamePlayPanel gamePlayPanel = gamePage.getGamePlayPanel();
         	
+        	// 데이터를 갱신해줌
+        	updateData();
+        	
         	if(model.getRemainEnemyNum() == 0) {
         		gamePlayPanel.endGamePlay();
         		// 적을 모두 죽였으면 다음 스테이지로 넘어감
         		switch(model.getCurrentGameStage()) {
         		case 1:
+        			view.getReadyPage().remakeMazeButtons();
         			stageController.playStage2();
         			break;
         		case 2:
+        			view.getReadyPage().remakeMazeButtons();
         			stageController.playStage3();
         			break;
         		case 3:
+        			view.getReadyPage().remakeMazeButtons();
         			stageController.endStage();
         			break;
         		}
@@ -266,24 +272,39 @@ public class Controller {
         	if(gamePlayPanel.didMainCharacterDie()) {
         		gamePlayPanel.endGamePlay();
         	}
-        	gamePlayPanel.updateThreadState();
         	gamePlayPanel.repaint();
         }
     }   
+ // gamePlayPanel에서 timer로 매번 실행시켜 줄 함수
+ 	private void updateData() {
+ 		updateEnemyData();
+ 		updateBulletData();
+ 	}
+ 	// 방향에 따라 데이터를 증가시켜줌. 만약 움직인 뒤 벽에 부딪힌 총알이 있으면, 해당 총알 삭제 
+ 	private void updateBulletData() {
+ 		model.setCurrentBulletAddTime(model.getCurrentBulletAddTime()+1);
+ 		if(model.getCurrentBulletAddTime() >= model.getBulletAddTime()) {
+ 			model.increaseBulletNum();		
+ 			view.getGamePage().updateRemainBulletLabel();
+ 			model.setCurrentBulletAddTime(0) ;
+ 		}
+ 		for(Bullet b:model.getBullets())
+ 			b.run();
+ 		model.getBullets().removeIf((b) -> !b.canRun);
+ 		
+ 	}
+ 	private void updateEnemyData() {
+ 		model.setCurrentEnemyAddTime(model.getCurrentEnemyAddTime()+1);
+ 		if(model.getCurrentEnemyAddTime() >= model.getEnemyAddTime()) {
+ 			model.addEnemyCharacter();	
+ 			model.setCurrentEnemyAddTime(0);
+ 		}
+ 		for(EnemyCharacter e:model.getEnemyCharacters()) {
+ 			e.run();
+ 		}
+ 		model.getEnemyCharacters().removeIf((e) -> !e.canRun);	
+ 	}
     
     
-    private class EnemyAddActionListener implements ActionListener{
-    	@Override
-    	public void actionPerformed(ActionEvent e) {
-    		model.addEnemyCharacter();  		
-    	}
-    }
-    private class BulletAddActionListener implements ActionListener{
-    	@Override
-    	public void actionPerformed(ActionEvent e) {
-    		model.increaseBulletNum();		
-    		view.getGamePage().updateRemainBulletLabel();
-    	}
-    }
 }
 

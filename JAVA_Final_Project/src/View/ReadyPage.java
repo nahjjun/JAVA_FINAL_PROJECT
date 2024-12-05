@@ -112,11 +112,16 @@ public class ReadyPage extends JPanel{
 		return mazeButtons[row][col];
 	}
 	
+	
+	public void updateUserInterFace() {
+		updateWallNum();
+		updateCurrentGameStage();
+	}
 	// 벽의 개수를 최신화함과 동시에, readyPage에 있는 남은 벽의 개수도 갱신
 	public void updateWallNum() {
 		remainWall.setText("남은 벽의 수 : " + model.getRemainWallNum());
 	}
-	public void updateCurrentGameStage() {
+	private void updateCurrentGameStage() {
 		stageLabel.setText("Stage" + model.getCurrentGameStage());
 	}
 	

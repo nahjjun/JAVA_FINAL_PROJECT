@@ -20,11 +20,8 @@ public class StageController {
 		this.model = model;
 		this.view = view;
 	}
-	
-	public void playStage1() {
-		// Stage Title을 먼저 출력하고, 스레드를 사용해서 2초 대기 후 기존 동작을 수행하게 한다.
-		paintStageTitle(1);
-		
+	private void playStage(int wallNum, int stageNum) {
+		paintStageTitle(stageNum);
 		Thread thread = new Thread(){
 			@Override
 			public void run() {
@@ -38,11 +35,13 @@ public class StageController {
 				contentPane.removeAll();
 				contentPane.setLayout(new BorderLayout());
 				
+				model.getBullets().clear();
+				model.getEnemyCharacters().clear();
+				
 				// 벽의 개수를 설정
-				model.setRemainWallNum(40);
-				model.setCurrentGameStage(1);
-				view.getReadyPage().updateWallNum();
-				view.getReadyPage().updateCurrentGameStage();
+				model.setRemainWallNum(wallNum);
+				model.setCurrentGameStage(stageNum);
+				view.getReadyPage().updateUserInterFace();
 				
 				contentPane.add(view.getReadyPage(), BorderLayout.CENTER);
 				view.revalidate();
@@ -52,40 +51,18 @@ public class StageController {
 		thread.start();
 	}
 	
-	public void playStage2() {
+	
+	public void playStage1() {
 		// Stage Title을 먼저 출력하고, 스레드를 사용해서 2초 대기 후 기존 동작을 수행하게 한다.
-		paintStageTitle(2);
-		
-		Thread thread = new Thread(){
-			@Override
-			public void run() {
-				try {
-					Thread.sleep(2000);
-				} catch (InterruptedException e) {
-					// TODO Auto-generated catch block
-					e.printStackTrace();
-				}
-				Container contentPane = view.getContentPane();
-				contentPane.removeAll();
-				contentPane.setLayout(new BorderLayout());
-				
-				// 벽의 개수를 설정
-				model.setRemainWallNum(30);
-				model.setCurrentGameStage(2);
-				view.getReadyPage().updateWallNum();
-				view.getReadyPage().updateCurrentGameStage();
-				
-				contentPane.add(view.getReadyPage(), BorderLayout.CENTER);
-				view.revalidate();
-				view.repaint();	
-			}
-		};
-		thread.start();	
+		playStage(40, 1);
+	}
+	
+	public void playStage2() {
+		playStage(30, 2);	
 	}
 	
 	public void playStage3() {
-		
-		
+		playStage(20, 3);	
 	}
 	// 스테이지를 종료하고 게암 종료를 하는 함수
 	public void endStage() {

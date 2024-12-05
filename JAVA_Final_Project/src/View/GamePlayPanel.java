@@ -23,10 +23,7 @@ public class GamePlayPanel extends JPanel {
     private Controller controller;	
     
     private Timer timer_game;
-    // 적이 추가되는 타이머  
-    private Timer timer_enemy;
-    // 총알이 일정 시간마다 추가되는 타이머
-    private Timer timer_addBullet;
+
     
     
     public GamePlayPanel(Model model, View view, Controller controller) {
@@ -37,8 +34,6 @@ public class GamePlayPanel extends JPanel {
         setLayout(null);
         
         timer_game = new Timer(1000/60, null);
-        timer_enemy = new Timer(model.getEnemyAddTime(), null);
-        timer_addBullet = new Timer(model.getBulletAddTime(), null);
         model.addEnemyCharacter();
     }
     
@@ -49,12 +44,7 @@ public class GamePlayPanel extends JPanel {
     public Timer getGameTimer() {
     	return timer_game;
     }
-    public Timer getEnemyTimer() {
-    	return timer_enemy;
-    }
-    public Timer getBulletTimer() {
-    	return timer_addBullet;
-    }
+    
     
 
     @Override
@@ -195,31 +185,20 @@ public class GamePlayPanel extends JPanel {
     	// 타이머 액션 리스너 추가
     	controller.addTimerActionListener();
     	timer_game.start();
-        timer_enemy.start();
-        timer_addBullet.start();
     }
 
     // 게임 종료
     public void endGamePlay() {
     	timer_game.stop();
-    	timer_enemy.stop();
-    	timer_addBullet.stop();
     }
 
     
-    // ------------- MoveObject 객체들의 스레드 상태 확인 -------------- //
-    // 종료된 스레드는 배열에서 제거함으로써 그려지지 않게 한다.
-    public void updateThreadState() {
-    	ArrayList<EnemyCharacter> enemyCharacters = model.getEnemyCharacters();
-    	ArrayList<Bullet> bullets = model.getBullets();
-    	enemyCharacters.removeIf(enemy -> !enemy.isAlive() || !enemy.canRun);
-    	bullets.removeIf(bullet -> !bullet.isAlive() || !bullet.canRun);
-    }
     
     // ------------ MainCharacter의 체력 확인 --------------- //
     // 메인 캐릭터가 죽으면 true 반환
     public boolean didMainCharacterDie() {
     	if(model.getMainCharacter().getHealth() <= 0) {
+    		endGamePlay();
     		return true;
     	}
     	return false;
