@@ -18,9 +18,14 @@ public class Model {
 	private int remainWallNum;
 	// 사용자가 사용할 수 있는 총알의 개수. 이 총알은 충전형이다.
 	private int remainBulletNum;
+	// 총알의 최대 개수
+	private int maxBulletNum;
+
+	
 	// 적이 추가되는 시간
 	private int enemyAddTime;
-	
+	// 총알이 충전되는 시간
+	private int bulletAddTime;
 	
 	public Model() {
 		maze = new Maze();
@@ -33,7 +38,11 @@ public class Model {
 		remainEnemyNum = 0;
 		remainWallNum = 0;
 		remainBulletNum = 0;
+		maxBulletNum = 0;
+		
 		enemyAddTime = 0;
+		bulletAddTime = 0;
+
 	}          
 	
 	
@@ -106,13 +115,26 @@ public class Model {
 	public int getRemainBulletNum() {
 		return remainBulletNum;
 	}
+	public void setMaxBulletNum(int bullet) {
+		maxBulletNum = bullet;
+	}
+	public int getMaxBulletNum() {
+		return maxBulletNum;
+	}
+	
+	// ---------- 타이머 ------------ //
 	public void setEnemyAddTime(int millisecond) {
 		enemyAddTime = millisecond;
 	}
 	public int getEnemyAddTime() {
 		return enemyAddTime;
 	}
-	
+	public void setBulletAddTime(int millisecond) {
+		bulletAddTime = millisecond;
+	}
+	public int getBulletAddTime() {
+		return bulletAddTime;
+	}
 	
 	// -------------- Bullet ----------------- //
 	public ArrayList<Bullet> getBullets() {
@@ -120,9 +142,13 @@ public class Model {
 	}
 	
 	public void addBullet() {
+		// 남아있는 총알이 없으면 함수 종료
+		decreaseBulletNum();
+		if(remainBulletNum<=0)
+			return;
 		synchronized (bullets) {
 			int direction = mainCharacter.getDirection();
-			int currentRow=mainCharacter.getRow(), currentCol=mainCharacter.getCol();
+			int currentRow = mainCharacter.getRow(), currentCol=mainCharacter.getCol();
 			Bullet bullet = null;
 			switch(direction) {
 			case Maze.NORTH:
@@ -146,6 +172,17 @@ public class Model {
 		if(index >= bullets.size()) throw new Exception("Model/deleteBullet()/범위를 벗어난 인덱스 접근입니다");
 		bullets.remove(index);
 		
+	}
+	
+	public void increaseBulletNum() {
+		if(maxBulletNum == remainBulletNum)
+			return;
+		++remainBulletNum;
+	}
+	public void decreaseBulletNum() {
+		if(0 == remainBulletNum)
+			return;
+		--remainBulletNum;
 	}
 	
 	// 사용자의 데이터를 기반으로 총알의 데미지를 최신화 하는 함수

@@ -23,8 +23,10 @@ public class GamePlayPanel extends JPanel {
     private Controller controller;	
     
     private Timer timer_game;
-    // ------ 적이 추가되는 타이머 ------ //  
+    // 적이 추가되는 타이머  
     private Timer timer_enemy;
+    // 총알이 일정 시간마다 추가되는 타이머
+    private Timer timer_addBullet;
     
     
     public GamePlayPanel(Model model, View view, Controller controller) {
@@ -36,6 +38,7 @@ public class GamePlayPanel extends JPanel {
         
         timer_game = new Timer(1000/60, null);
         timer_enemy = new Timer(model.getEnemyAddTime(), null);
+        timer_addBullet = new Timer(model.getBulletAddTime(), null);
         model.addEnemyCharacter();
     }
     
@@ -49,7 +52,9 @@ public class GamePlayPanel extends JPanel {
     public Timer getEnemyTimer() {
     	return timer_enemy;
     }
-    
+    public Timer getBulletTimer() {
+    	return timer_addBullet;
+    }
     
 
     @Override
@@ -191,12 +196,14 @@ public class GamePlayPanel extends JPanel {
     	controller.addTimerActionListener();
     	timer_game.start();
         timer_enemy.start();
+        timer_addBullet.start();
     }
 
     // 게임 종료
     public void endGamePlay() {
     	timer_game.stop();
     	timer_enemy.stop();
+    	timer_addBullet.stop();
     }
 
     

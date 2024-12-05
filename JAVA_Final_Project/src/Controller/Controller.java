@@ -64,6 +64,7 @@ public class Controller {
 		// ---- GamePlayPanel class 액션 리스너 할당 ---- //
 		view.getGamePage().getGamePlayPanel().getGameTimer().addActionListener(new GamePlayActionListener());;
 		view.getGamePage().getGamePlayPanel().getEnemyTimer().addActionListener(new EnemyAddActionListener());
+		view.getGamePage().getGamePlayPanel().getBulletTimer().addActionListener(new BulletAddActionListener());
 	}
 	
 	// ---------------- StartPage 리스너 ---------------- //
@@ -204,7 +205,10 @@ public class Controller {
 		            case KeyEvent.VK_D: newDirection = Maze.EAST; break;
 		            case KeyEvent.VK_W: newDirection = Maze.NORTH; break;
 		            case KeyEvent.VK_S: newDirection = Maze.SOUTH; break;
-		            case KeyEvent.VK_SPACE: model.addBullet(); break;
+		            case KeyEvent.VK_SPACE: 
+		            	model.addBullet();
+		            	view.getGamePage().updateRemainBulletLabel();
+		            	break;
 		        }
 		        if (newDirection != currentDirection && newDirection != -1) {
 		            currentDirection = newDirection;
@@ -258,16 +262,14 @@ public class Controller {
         		}
         		return;
         	}
-        	view.getGamePage().updateRemainEnemyNum();
+        	view.getGamePage().updateRemainEnemyLabel();
         	if(gamePlayPanel.didMainCharacterDie()) {
         		gamePlayPanel.endGamePlay();
         	}
         	gamePlayPanel.updateThreadState();
         	gamePlayPanel.repaint();
         }
-    }
-    
-    
+    }   
     
     
     private class EnemyAddActionListener implements ActionListener{
@@ -276,6 +278,12 @@ public class Controller {
     		model.addEnemyCharacter();  		
     	}
     }
-
+    private class BulletAddActionListener implements ActionListener{
+    	@Override
+    	public void actionPerformed(ActionEvent e) {
+    		model.increaseBulletNum();		
+    		view.getGamePage().updateRemainBulletLabel();
+    	}
+    }
 }
 
