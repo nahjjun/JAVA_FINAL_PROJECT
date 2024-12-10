@@ -16,12 +16,13 @@ public class EnemyCharacter extends MoveObject{
 
 	public boolean canRun = true;
 	
-	// ------ 캐릭터 데이터 ------ //
-	private int damage = 5;  
-	private int health = 5;
-	
+	// ------ 캐릭터 기본 데이터 ------ //
+	public static int damage = 1;  
+	public static int health = 1;
 	public static int moveOnce = 2;
 	
+	// 현재 내 데이터
+	private int myHealth = health;
 	
 	public EnemyCharacter(Model model, int row, int col) {
 		super(row,col,20,20);
@@ -43,8 +44,15 @@ public class EnemyCharacter extends MoveObject{
     	}
 	}
 	
+	public static void resetData() {
+		health = 1;
+		damage = 1;
+		moveOnce = 2;
+	}
 	
-	
+	public int getCurrentHealth() {
+		return myHealth;
+	}
 	
 	// ------------- private void isBulletImpacted() ------------//
 	// 총알이 해당 적 객체와 부딪혔는지 확인하는 메소드. 
@@ -54,10 +62,10 @@ public class EnemyCharacter extends MoveObject{
         while (iterator.hasNext()) {
             Bullet bullet = iterator.next();
             if (isImpacted(bullet)) {	
-            	System.out.println("충돌 검사: 적(" + this + ")와 총알(" + bullet + ")");
-                health -= Bullet.getDamage();
+            	System.out.println("적(" + myHealth + ")와 총알(" +model.getMainCharacter().getDamage() + ")");
+            	myHealth -= model.getMainCharacter().getDamage();
                 model.getBullets().remove(bullet);
-                if(health<=0) {
+                if(myHealth<=0) {
                 	model.setRemainEnemyNum(model.getRemainEnemyNum()-1);
                 	canRun = false;
                 }
@@ -117,12 +125,15 @@ public class EnemyCharacter extends MoveObject{
 
 	// -------- private void traceMainCharacter() --------//
 	// 사용자 공간에 적이 들어가면 메인 캐릭터에게 무한정 다가가는 함수
+	// 메인 캐릭터와 접촉하면 메인 캐릭터의 피를 깎는 함수
 	private void traceMainCharacter() {
 		moveToMainCharacter();
     	if(isImpacted(model.getMainCharacter())) {
     		canRun = false;
-    		model.getMainCharacter().decreaseHealth(damage);
+    		model.getMainCharacter().minusHealth(damage);
     		System.out.println("메인 캐릭터 체력: "+model.getMainCharacter().getHealth());
+    		// 적과 사용자가 부딪히면 남아있는 적 개수도 감소시킨다.
+    		model.setRemainEnemyNum(model.getRemainEnemyNum()-1);
     		return;
     	}
     	isBulletImpacted();

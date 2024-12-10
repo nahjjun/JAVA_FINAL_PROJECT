@@ -35,7 +35,8 @@ public class View extends JFrame{
 	private StartPage startPage;
 	private ReadyPage readyPage;
 	private GamePage gamePage;
-	
+	private EndPage endPage;
+	private SelectSkillPage selectSkillPage;
 	
 	public View(Model model, Controller controller) {
 		this.model = model;
@@ -44,6 +45,8 @@ public class View extends JFrame{
 		startPage = new StartPage();
 		readyPage = new ReadyPage(model);
 		gamePage = new GamePage(model, this, controller);
+		endPage = new EndPage(model, this, controller);
+		selectSkillPage  = new SelectSkillPage(model);
 		
 		setTitle("미로 디펜스 게임");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -60,18 +63,28 @@ public class View extends JFrame{
 		setVisible(true);
 	}
 	
+	
+	// -------- getter / setter ----------- //
 	public StartPage getStartPage() {
 		return startPage;
 	}
+	public GamePage getGamePage() {
+    	return gamePage;
+    }
 	public ReadyPage getReadyPage() {
 		return readyPage;
-	}	
+	}
+	public EndPage getEndPage() {
+    	return endPage;
+    }
+	public SelectSkillPage getSelectSkillPage() {
+    	return selectSkillPage;
+    }
 	
 	// 새로운 게임 페이지를 생성하는 함수 
+	// 기존 게임을 종료하고 새로 시작할 때마다 gamePage 객체를 지우고 새로 생성한다.
 	public void resetGamePage() {
 		gamePage = new GamePage(model, this, controller);
 	}
-    public GamePage getGamePage() {
-    	return gamePage;
-    }
+    
 }

@@ -8,7 +8,7 @@ public class MainCharacter extends MoveObject{
 	private int prevDirection;
 	
 	// ------ 캐릭터 데이터 ------ //  
-	private int health = 50;
+	private int health = 10;
 	private int damage = 1;
 	private int moveOnce = 2;
 	
@@ -18,6 +18,13 @@ public class MainCharacter extends MoveObject{
 		this.model = model;
 		direction = Maze.NORTH;
 		prevDirection = Maze.NORTH;
+	}
+	
+	
+	public void resetData() {
+		health = 10;
+		damage = 1;
+		moveOnce = 2;
 	}
 	
 	
@@ -50,10 +57,27 @@ public class MainCharacter extends MoveObject{
 		this.health = health;	
 	}
 	public int getHealth() {return health;}
-
-	public void decreaseHealth(int damage) {
-		health -= damage;
+	public int getMoveOnce() {return moveOnce;}
+	
+	
+	
+	
+	
+	public void minusHealth(int value) {
+		health -= value;
 	}
+	// 한번에 5씩 회복시켜줌 (스킬)
+	public void increaseHealth() {
+		health += 5;
+	}
+	public void increaseDamage() {
+		damage++;
+	}
+	public void increaseMoveOnce() {
+		moveOnce++;
+	}
+	
+	
 	
 	// ------ increase/decrease ----- // 
 	@Override

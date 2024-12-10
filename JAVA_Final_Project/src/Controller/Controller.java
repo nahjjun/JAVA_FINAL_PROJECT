@@ -34,6 +34,7 @@ public class Controller {
 		try {
 			// ---- StartPage class 액션 리스너 할당 ---- //
 			view.getStartPage().getGoStagePageButton().addActionListener(new GoStagePageButtonActionListener());
+			view.getStartPage().getExitButton().addActionListener(new EndGameActionListener());
 			
 			// ---- ReadyPage class 액션 리스너 할당 ---- //
 			view.getReadyPage().getGameStartButton().addActionListener(new GameStartButtonActionListener());
@@ -45,12 +46,18 @@ public class Controller {
 				}
 			}	
 			
+			// ---- SelectSkillPage 액션 리스너 할당 ---- //
+			view.getSelectSkillPage().getSkillButtons()[0].addActionListener(new SelectSkillButtonActionListener1());
+			view.getSelectSkillPage().getSkillButtons()[1].addActionListener(new SelectSkillButtonActionListener2());
+			view.getSelectSkillPage().getSkillButtons()[2].addActionListener(new SelectSkillButtonActionListener3());
+			
 			
 			// ---- GamePage class 액션 리스너 할당 ---- //
 			view.setFocusable(true);
 			view.addKeyListener(new MainCharacterMoveKeyListener());
 			
-	        
+	        view.getEndPage().getRestartGameButton().addActionListener(new GoStagePageButtonActionListener());
+	        view.getEndPage().getEndGameButton().addActionListener(new EndGameActionListener());
 			
 		}catch(Exception e) {
 			System.err.println(e.getMessage());
@@ -71,10 +78,19 @@ public class Controller {
 	private class GoStagePageButtonActionListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			// model의 데이터를 전부 초기화해줌
+			model.resetModelData();
+			view.getReadyPage().remakeMazeButtons();;
 			stageController.playStage1();
 		}
 	}
-	
+	private class EndGameActionListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			// 시스템 종료
+			System.exit(0);
+		}
+	}
 	
 	
 	
@@ -249,29 +265,38 @@ public class Controller {
         	// 데이터를 갱신해줌
         	updateData();
         	
-        	if(model.getRemainEnemyNum() == 0) {
-        		gamePlayPanel.endGamePlay();
-        		// 적을 모두 죽였으면 다음 스테이지로 넘어감
-        		switch(model.getCurrentGameStage()) {
-        		case 1:
-        			view.getReadyPage().remakeMazeButtons();
-        			stageController.playStage2();
-        			break;
-        		case 2:
-        			view.getReadyPage().remakeMazeButtons();
-        			stageController.playStage3();
-        			break;
-        		case 3:
-        			view.getReadyPage().remakeMazeButtons();
-        			stageController.endStage();
-        			break;
-        		}
-        		return;
-        	}
-        	view.getGamePage().updateRemainEnemyLabel();
         	if(gamePlayPanel.didMainCharacterDie()) {
         		gamePlayPanel.endGamePlay();
+        		stageController.endStage();
+        		return;
         	}
+        	
+        	// 사용자가 해당 스테이지를 클리어했을 때, 스킬 선택 페이지로 넘어간다.
+        	if(model.getRemainEnemyNum() <= 0) {
+        		gamePlayPanel.endGamePlay();
+        		// 만약 해당 스테이지가 마지막 스테이지였다면 게임 종료
+        		if(model.getCurrentGameStage()== Model.MAX_STAGE) {
+        			// 게임 클리어 여부 변수를 true로 설정
+        			model.setClearedGame(true);
+        			stageController.endStage();
+        			return;
+        		}
+        		
+        		Container contentPane = view.getContentPane();
+        		contentPane.removeAll();
+        		contentPane.setLayout(new BorderLayout());
+        		
+        		// 스킬 버튼들을 다시 만들고, 화면에 추가한다.
+        		view.getSelectSkillPage().remakeSkillButtons();
+        		contentPane.add(view.getSelectSkillPage(), BorderLayout.CENTER);
+        		contentPane.revalidate();
+    		    contentPane.repaint();
+        		return;
+        	}
+        	// 적이 아직 전부 죽지 않았다면, 인터페이스 창의 남아있는 적의 개수를 갱신한다. 
+        	view.getGamePage().updateRemainEnemyLabel();
+        	view.getGamePage().updateRemainUserHealthLabel();
+        	
         	gamePlayPanel.repaint();
         }
     }   
@@ -303,8 +328,96 @@ public class Controller {
  			e.run();
  		}
  		model.getEnemyCharacters().removeIf((e) -> !e.canRun);	
+ 	} 	
+    
+ 	
+ 	// ----------- SelectSkillPage ActionListener ---------- //
+ 	// 다음 스테이지로 가기 전, 스킬을 선택하는 페이지
+ 	private class SelectSkillButtonActionListener1 implements ActionListener{
+ 		@Override
+ 		public void actionPerformed(ActionEvent e) {
+ 			// 버튼이 눌리면 해당 이벤트(스킬)을 수행하고
+ 			view.getSelectSkillPage().doSkillEvent(view.getSelectSkillPage().getRandomSelected()[0]);;
+ 			// 이후엔 현재 스테이지를 확인하고, 다음 스테이지를 실행한다.
+ 			switch(model.getCurrentGameStage()) {
+ 			case 1:
+ 				// 다음 스테이지 실행
+ 				stageController.playStage2();
+ 				break;
+ 			case 2:
+ 				stageController.playStage3();
+ 				break;
+ 			case 3:
+ 				stageController.playStage4();
+ 				break;
+ 			case 4:
+ 				stageController.playStage5();
+ 				break;
+ 			case 5:
+ 				stageController.playStage6();
+ 				break;
+ 			case 6:
+ 				stageController.endStage();
+ 				break;
+ 			}
+ 			
+ 		}
  	}
-    
-    
+ 	private class SelectSkillButtonActionListener2 implements ActionListener{
+ 		@Override
+ 		public void actionPerformed(ActionEvent e) {
+ 			view.getSelectSkillPage().doSkillEvent(view.getSelectSkillPage().getRandomSelected()[1]);;
+ 			// 이후엔 현재 스테이지를 확인하고, 다음 스테이지를 실행한다.
+ 			switch(model.getCurrentGameStage()) {
+ 			case 1:
+ 				// 다음 스테이지 실행
+ 				stageController.playStage2();
+ 				break;
+ 			case 2:
+ 				stageController.playStage3();
+ 				break;
+ 			case 3:
+ 				stageController.playStage4();
+ 				break;
+ 			case 4:
+ 				stageController.playStage5();
+ 				break;
+ 			case 5:
+ 				stageController.playStage6();
+ 				break;
+ 			case 6:
+ 				stageController.endStage();
+ 				break;
+ 			}
+ 		}
+ 	}
+ 	private class SelectSkillButtonActionListener3 implements ActionListener{
+ 		@Override
+ 		public void actionPerformed(ActionEvent e) {
+ 			view.getSelectSkillPage().doSkillEvent(view.getSelectSkillPage().getRandomSelected()[2]);;
+ 			// 이후엔 현재 스테이지를 확인하고, 다음 스테이지를 실행한다.
+ 			switch(model.getCurrentGameStage()) {
+ 			case 1:
+ 				// 다음 스테이지 실행
+ 				stageController.playStage2();
+ 				break;
+ 			case 2:
+ 				stageController.playStage3();
+ 				break;
+ 			case 3:
+ 				stageController.playStage4();
+ 				break;
+ 			case 4:
+ 				stageController.playStage5();
+ 				break;
+ 			case 5:
+ 				stageController.playStage6();
+ 				break;
+ 			case 6:
+ 				stageController.endStage();
+ 				break;
+ 			}
+ 		}
+ 	}
 }
 

@@ -2,13 +2,13 @@ package View;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Graphics;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 import Controller.Controller;
+import Model.EnemyCharacter;
 import Model.Model;
 
 public class GamePage extends JPanel {
@@ -18,12 +18,20 @@ public class GamePage extends JPanel {
     
     private GamePlayPanel gamePlayPanel; // 미로를 둘 패널
     private JPanel userInterfacePanel_NORTH; // 사용자 인터페이스 패널
+    private JPanel userInterfacePanel_SOUTH;
     
     // 남은 적 캐릭터의 개수를 paint하는 라벨
     private JLabel remainEnemyLabel;
     // 남은 총알 개수를 paint하는 라벨
     private JLabel remainBulletLabel;
-
+    // 남은 캐릭터의 체력을 paint하는 라벨
+    private JLabel remainUserHealthLabel;
+    
+    // 캐릭터의 공격력을 출력하는 라벨
+    private JLabel userDamageLabel;
+    // 캐릭터의 이동속도를 출력하는 라벨
+    private JLabel userMoveOnceLabel;
+    
     
     public GamePage(Model model, View view, Controller controller) {
         try {
@@ -47,21 +55,44 @@ public class GamePage extends JPanel {
     		
             remainBulletLabel = new JLabel("남은 총알 개수 : " + model.getRemainBulletNum());
             remainBulletLabel.setSize(100,20);
-            remainBulletLabel.setLocation(100,5);
+            remainBulletLabel.setLocation(200,5);
+            
+            remainUserHealthLabel = new JLabel("체력 : " + model.getMainCharacter().getHealth());
+            remainUserHealthLabel.setSize(100,20);
+            remainUserHealthLabel.setLocation(100,5);
+            
+            
+            
+            userDamageLabel = new JLabel("공격력 : " + model.getMainCharacter().getDamage());
+            userDamageLabel.setSize(100,20);
+            userDamageLabel.setLocation(100,5);
+            
+            userMoveOnceLabel = new JLabel("이동속도 : " + model.getMainCharacter().getMoveOnce());
+            userMoveOnceLabel.setSize(100,20);
+            userMoveOnceLabel.setLocation(200,5);
             
             
             
             // --------- userInterfacePanel_NORTH -------- //
+            // --------- userInterfacePanel_SOUTH-------- //
             userInterfacePanel_NORTH = new JPanel();
             userInterfacePanel_NORTH.setPreferredSize(new Dimension(View.USER_INTERFACE_PANEL_WIDTH, View.USER_INTERFACE_PANEL_HEIGHT));
             userInterfacePanel_NORTH.setLayout(null);
             userInterfacePanel_NORTH.add(remainEnemyLabel);
             userInterfacePanel_NORTH.add(remainBulletLabel);
+            userInterfacePanel_NORTH.add(remainUserHealthLabel);
+            
+            userInterfacePanel_SOUTH = new JPanel();
+            userInterfacePanel_SOUTH.setPreferredSize(new Dimension(View.USER_INTERFACE_PANEL_WIDTH, View.USER_INTERFACE_PANEL_HEIGHT));
+            userInterfacePanel_SOUTH.setLayout(null);
+            userInterfacePanel_SOUTH.add(userDamageLabel);
+            userInterfacePanel_SOUTH.add(userMoveOnceLabel);
             
             
             // 컴포넌트 추가
             add(gamePlayPanel, BorderLayout.CENTER);
             add(userInterfacePanel_NORTH, BorderLayout.NORTH);
+            add(userInterfacePanel_SOUTH, BorderLayout.SOUTH);
             
         } catch (Exception err) {
             System.err.println(err.getMessage());
@@ -76,25 +107,47 @@ public class GamePage extends JPanel {
     	model.setCurrentBulletAddTime(0);
     	model.setCurrentEnemyAddTime(0);
     	
-    	// 1초마다 총알 리필
-    	model.setBulletAddTime(60 /2); 
-    	model.setMaxBulletNum(20);
+    	
+    	model.setBulletAddTime(model.getBulletAddTime()); 
+    	model.setMaxBulletNum(model.getMaxBulletNum());
     	model.setRemainBulletNum(model.getMaxBulletNum());
     	
     	
     	switch(currentStage) {
     	case 1:
-    		model.setRemainEnemyNum(10);
+    		model.setMaxEnemyNum(30);
     		// 0.5초마다 적 추가
     		model.setEnemyAddTime(60/2);
     		break;
     	case 2:
-    		model.setRemainEnemyNum(10);
-    		model.setEnemyAddTime(60/3);
+    		model.setMaxEnemyNum(40);
+    		model.setEnemyAddTime(60/2);
+    		EnemyCharacter.damage = 2;
+    		EnemyCharacter.health = 2;
     		break;
     	case 3:
-    		model.setRemainEnemyNum(10);
-    		model.setEnemyAddTime(10);
+    		model.setMaxEnemyNum(50);
+    		model.setEnemyAddTime(60/2);
+    		EnemyCharacter.damage = 2;
+    		EnemyCharacter.health = 3;
+    		break;
+    	case 4:
+    		model.setMaxEnemyNum(60);
+    		model.setEnemyAddTime(60/3);
+    		EnemyCharacter.damage = 2;
+    		EnemyCharacter.health = 3;
+    		break;
+    	case 5:
+    		model.setMaxEnemyNum(70);
+    		model.setEnemyAddTime(60/3);
+    		EnemyCharacter.damage = 3;
+    		EnemyCharacter.health = 3;
+    		break;
+    	case 6:
+    		model.setMaxEnemyNum(80);
+    		model.setEnemyAddTime(60/3);
+    		EnemyCharacter.damage = 3;
+    		EnemyCharacter.health = 4;
     		break;
     	}
     }
@@ -107,6 +160,9 @@ public class GamePage extends JPanel {
  	}
  	public void updateRemainBulletLabel() {
  		remainBulletLabel.setText("남은 총알 수 : " + model.getRemainBulletNum());
+ 	}
+ 	public void updateRemainUserHealthLabel() {
+ 		remainUserHealthLabel.setText("체력 : " + model.getMainCharacter().getHealth());
  	}
  	
     

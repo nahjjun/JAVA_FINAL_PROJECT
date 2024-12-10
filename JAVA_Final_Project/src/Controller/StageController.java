@@ -20,7 +20,7 @@ public class StageController {
 		this.model = model;
 		this.view = view;
 	}
-	private void playStage(int wallNum, int stageNum) {
+	private void playStage(int stageNum) {
 		paintStageTitle(stageNum);
 		Thread thread = new Thread(){
 			@Override
@@ -37,13 +37,21 @@ public class StageController {
 				
 				model.getBullets().clear();
 				model.getEnemyCharacters().clear();
-				
-				// 벽의 개수를 설정
-				model.setRemainWallNum(wallNum);
 				model.setCurrentGameStage(stageNum);
-				view.getReadyPage().updateUserInterFace();
 				
-				contentPane.add(view.getReadyPage(), BorderLayout.CENTER);
+				// 현재 게임 스테이지를 설정
+				if(stageNum == 1) {
+					view.getReadyPage().updateUserInterFace();
+					contentPane.add(view.getReadyPage(), BorderLayout.CENTER);	
+				}
+				else {
+					model.setWalls(); // 벽 객체들 생성
+					view.resetGamePage();
+					contentPane.add(view.getGamePage(), BorderLayout.CENTER);
+					view.getGamePage().startGame();
+				}
+					
+				
 				view.revalidate();
 				view.repaint();	
 			}
@@ -54,19 +62,43 @@ public class StageController {
 	
 	public void playStage1() {
 		// Stage Title을 먼저 출력하고, 스레드를 사용해서 2초 대기 후 기존 동작을 수행하게 한다.
-		playStage(40, 1);
+		playStage(1);
 	}
 	
 	public void playStage2() {
-		playStage(30, 2);	
+		playStage(2);	
 	}
 	
 	public void playStage3() {
-		playStage(20, 3);	
+		playStage(3);	
 	}
-	// 스테이지를 종료하고 게암 종료를 하는 함수
+	public void playStage4() {
+		playStage(4);	
+	}
+	public void playStage5() {
+		playStage(5);	
+	}
+	public void playStage6() {
+		playStage(6);	
+	}
+	// 스테이지를 종료하고 게임 종료를 하는 함수
 	public void endStage() {
 		
+		Container contentPane = view.getContentPane();
+		contentPane.removeAll();
+		contentPane.setLayout(new BorderLayout());
+		
+		
+		contentPane.add(view.getEndPage(), BorderLayout.CENTER);
+		
+		// 게임 클리어 여부에 따라 문구가 달라짐
+		if(!model.getClearedGame())
+			view.getEndPage().getInterfaceLabel().setText("클리어 실패...");
+		else
+			view.getEndPage().getInterfaceLabel().setText("클리어 성공!");
+		
+		view.revalidate();
+		view.repaint();
 		
 	}
 	

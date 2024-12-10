@@ -9,8 +9,7 @@ public class Bullet extends MoveObject{
 	private final int direction; // 해당 총알이 부여받은 방향. 값이 -1이면 스레드 종료
 	
 	// ----- 총알 데이터 ----- // 
-	private static int damage = 5;
-	private static int moveOnce = 3;
+	public static int moveOnce = 3;
 	
 	public boolean canRun = true;
 	
@@ -56,6 +55,12 @@ public class Bullet extends MoveObject{
             Wall wall = iterator.next();
             if (isImpacted(wall)) {	            	
             	canRun = false;
+            	// 벽의 체력 최신화
+            	wall.setHealth(wall.getHealth()-model.getMainCharacter().getDamage());
+            	// 만약 벽의 체력이 0 이하가 된 경우
+            	if(wall.getHealth() <= 0) 
+            		model.getWalls().remove(wall);
+            		
                 break;
             }         
         }
@@ -63,13 +68,7 @@ public class Bullet extends MoveObject{
 
 	
 	
-	// ----- setter / getter ----- //
-	
-	public static void setDamage(int d) {
-		damage = d;	
-	}
-	public static int getDamage() {return damage;}
-	
+	// ----- setter / getter ----- //	
 	public static void setMoveOnce(int m) {
 		moveOnce = m;	
 	}

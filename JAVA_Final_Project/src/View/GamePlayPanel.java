@@ -1,5 +1,6 @@
 package View;
 
+import java.awt.Color;
 import java.awt.Graphics;
 import java.util.ArrayList;
 
@@ -12,6 +13,7 @@ import Model.EnemyCharacter;
 import Model.MainCharacter;
 import Model.Maze;
 import Model.Model;
+import Model.Wall;
 
 public class GamePlayPanel extends JPanel {
     public static final int MAX_ROW = 600; // GamePlayPanel에서 격자 기준 최대로
@@ -60,12 +62,10 @@ public class GamePlayPanel extends JPanel {
     // --------------public void paintMaze(Graphics g) -------//
     // 미로를 그리는 함수
     private void paintMaze(Graphics g) {
+    	paintWall(g);
         for (int row = 0; row < Maze.ROWS; ++row) {
             for (int col = 0; col < Maze.COLS; ++col) {
                 switch (model.getMaze().getMazeMatrix()[row][col]) {
-                    case Maze.WALL:
-                    	paintWall(g, row, col);
-                        break;
                     case Maze.WALL_ENTRANCE:
                     case Maze.USER_ENTRANCE:
                     	paintEntrance(g, row, col);
@@ -78,14 +78,27 @@ public class GamePlayPanel extends JPanel {
         }
     }
 
-	    // 벽을 그리기
-	    private void paintWall(Graphics g, int row, int col) {
-	        int currentRow = row * CELL_LENGTH; 
-	        int currentCol = col * CELL_LENGTH;
-	
-	        g.setColor(View.WALL_COLOR);
-	        g.fillRect(currentCol, currentRow, CELL_LENGTH, CELL_LENGTH);
-	    }
+ // 벽을 그리기
+    private void paintWall(Graphics g) {
+    	ArrayList<Wall> walls = model.getWalls();
+    	for(Wall w : walls) {
+    		switch(w.getHealth()) {
+    		case 4:
+    			g.setColor(new Color(0,0,0));
+    			break;
+    		case 3:
+    			g.setColor(new Color(80,80,80));
+    			break;
+    		case 2:
+    			g.setColor(new Color(150,150,150));
+    			break;
+    		case 1:
+    			g.setColor(new Color(211,211,211));
+    			break;
+    		}
+    		g.fillRect(w.getCol(), w.getRow(), w.getWidth(), w.getHeight());	
+    	}	        
+    }
 	
 	    // 출입구를 그리기
 	    private void paintEntrance(Graphics g, int row, int col) {
@@ -111,25 +124,6 @@ public class GamePlayPanel extends JPanel {
     // 메인 캐릭터 출력 함수
     private void paintMainCharacter(Graphics g) {
     	MainCharacter mainCharacter = model.getMainCharacter();
-    	// 이전 캐릭터 삭제
-    	g.setColor(View.USERPLACE_COLOR);
-    	g.fillRect(mainCharacter.getPrevCol(), mainCharacter.getPrevRow(), mainCharacter.getWidth(), mainCharacter.getHeight());
-    	
-    	g.setColor(View.USERPLACE_COLOR);
-    	switch(mainCharacter.getPrevDirection()) {
-    	case Maze.NORTH:
-    		g.fillRect(mainCharacter.getCol()+5, mainCharacter.getRow()-5, 10, 5);
-    		break;
-    	case Maze.SOUTH:
-    		g.fillRect(mainCharacter.getCol()+5, mainCharacter.getRow(), 10, 5);
-    		break;
-    	case Maze.WEST:
-    		g.fillRect(mainCharacter.getCol()-5, mainCharacter.getRow()+5, 5, 10);
-    		break;
-    	case Maze.EAST:
-    		g.fillRect(mainCharacter.getCol(), mainCharacter.getRow()+5, 5, 10);
-    		break;
-    	}
     	
     	// 현재 캐릭터 출력
     	g.setColor(View.MAINCHARACTER_COLOR);
@@ -158,9 +152,21 @@ public class GamePlayPanel extends JPanel {
     private void paintEnemyCharacter(Graphics g) {
     	ArrayList<EnemyCharacter> enemyCharacters = model.getEnemyCharacters();
     	for (EnemyCharacter enemy : enemyCharacters) {
-    	    g.setColor(View.PATH_COLOR);
-    	    g.fillRect(enemy.getPrevCol(), enemy.getPrevRow(), enemy.getWidth(), enemy.getHeight());
-    	    g.setColor(View.ENEMYCHARACTER_COLOR);
+    	    switch(enemy.getCurrentHealth()) {
+    	    case 4:
+    	    	g.setColor(new Color(255,0,0,255));
+    	    	break;
+    	    case 3:
+    	    	g.setColor(new Color(255,0,0,200));
+    	    	break;
+    	    case 2:
+    	    	g.setColor(new Color(255,0,0,150));
+    	    	break;
+    	    case 1:
+    	    	g.setColor(new Color(255,0,0,100));
+    	    	break;
+    	    }
+    	    
     	    g.fillRect(enemy.getCol(), enemy.getRow(), enemy.getWidth(), enemy.getHeight());
     	}    	
     }    
@@ -170,8 +176,6 @@ public class GamePlayPanel extends JPanel {
     private void paintBullet(Graphics g) {
     	ArrayList<Bullet> bullets = model.getBullets();
     	for (Bullet bullet : bullets) {
-    	    g.setColor(View.PATH_COLOR);
-    	    g.fillRect(bullet.getPrevCol(), bullet.getPrevRow(), bullet.getWidth(), bullet.getHeight());
     	    g.setColor(View.BULLET_COLOR);
     	    g.fillRect(bullet.getCol(), bullet.getRow(), bullet.getWidth(), bullet.getHeight());
     	} 	
@@ -187,7 +191,7 @@ public class GamePlayPanel extends JPanel {
     	timer_game.start();
     }
 
-    // 게임 종료
+    // 게임 종료 (timer를 stop 시키는 함수)
     public void endGamePlay() {
     	timer_game.stop();
     }
@@ -195,6 +199,7 @@ public class GamePlayPanel extends JPanel {
     
     
     // ------------ MainCharacter의 체력 확인 --------------- //
+    // ------ public boolean didMainCharacterDie() ------ //
     // 메인 캐릭터가 죽으면 true 반환
     public boolean didMainCharacterDie() {
     	if(model.getMainCharacter().getHealth() <= 0) {
