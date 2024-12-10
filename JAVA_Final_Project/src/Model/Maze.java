@@ -170,9 +170,6 @@ public class Maze {
 			for(int col=0; col<COLS; ++col) {
 				graph[row][col].clear();
 				switch(mazeMatrix[row][col]) {
-				case WALL:
-					graph[row][col].clear(); // 사용자 공간이거나 벽이면 해당 인덱스의 리스트 전부 비우기
-					break;
 				case PATH:
 				case WALL_ENTRANCE:
 				case USER_ENTRANCE:

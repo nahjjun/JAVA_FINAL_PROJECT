@@ -113,7 +113,7 @@ public class EnemyCharacter extends MoveObject{
 	    	path.remove(0);
 	}
 	// view에서 해당 적 캐릭터의 위치를 설정해줘야 함.
-	private void updatePath() {
+	public void updatePath() {
 		try {
 			path = model.getMaze().getShortestPath(new Coordinate(row / GamePlayPanel.CELL_LENGTH, col / GamePlayPanel.CELL_LENGTH));
 		} catch (Exception e) {

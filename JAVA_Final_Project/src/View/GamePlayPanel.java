@@ -13,6 +13,7 @@ import Model.EnemyCharacter;
 import Model.MainCharacter;
 import Model.Maze;
 import Model.Model;
+import Model.UserEntrance;
 import Model.Wall;
 
 public class GamePlayPanel extends JPanel {
@@ -63,19 +64,8 @@ public class GamePlayPanel extends JPanel {
     // 미로를 그리는 함수
     private void paintMaze(Graphics g) {
     	paintWall(g);
-        for (int row = 0; row < Maze.ROWS; ++row) {
-            for (int col = 0; col < Maze.COLS; ++col) {
-                switch (model.getMaze().getMazeMatrix()[row][col]) {
-                    case Maze.WALL_ENTRANCE:
-                    case Maze.USER_ENTRANCE:
-                    	paintEntrance(g, row, col);
-                        break;
-                    case Maze.USER_PLACE:
-                    	paintUserPlace(g, row, col);
-                        break;
-                }
-            }
-        }
+    	paintUserPlace(g);
+    	paintEntrance(g);
     }
 
  // 벽을 그리기
@@ -99,23 +89,29 @@ public class GamePlayPanel extends JPanel {
     		g.fillRect(w.getCol(), w.getRow(), w.getWidth(), w.getHeight());	
     	}	        
     }
+    private void paintUserPlace(Graphics g) {
+    	for (int row = 0; row < Maze.ROWS; ++row) {
+            for (int col = 0; col < Maze.COLS; ++col) {
+                switch (model.getMaze().getMazeMatrix()[row][col]) {
+                    case Maze.USER_PLACE:
+            	        int currentRow = row * CELL_LENGTH;
+            	        int currentCol = col * CELL_LENGTH;
+            	
+            	        g.setColor(View.USERPLACE_COLOR);
+            	        g.fillRect(currentCol, currentRow, CELL_LENGTH, CELL_LENGTH);
+                        break;
+                }
+            }
+        }
+    	
+    }
 	
 	    // 출입구를 그리기
-	    private void paintEntrance(Graphics g, int row, int col) {
-	        int currentRow = row * CELL_LENGTH;
-	        int currentCol = col * CELL_LENGTH;
-	
-	        g.setColor(View.ENTRANCE_COLOR);
-	        g.fillRect(currentCol, currentRow, CELL_LENGTH, CELL_LENGTH);
-	    }
-	
-	    // 사용자의 위치를 그리기
-	    private void paintUserPlace(Graphics g, int row, int col) {
-	        int currentRow = row * CELL_LENGTH;
-	        int currentCol = col * CELL_LENGTH;
-	
-	        g.setColor(View.USERPLACE_COLOR);
-	        g.fillRect(currentCol, currentRow, CELL_LENGTH, CELL_LENGTH);
+	    private void paintEntrance(Graphics g) {
+	    	for (UserEntrance e : model.getUserEntrances()) {
+	    		g.setColor(View.ENTRANCE_COLOR);
+		        g.fillRect(e.getCol(), e.getRow(), CELL_LENGTH, CELL_LENGTH);   
+	        }
 	    }
 
     
@@ -154,16 +150,16 @@ public class GamePlayPanel extends JPanel {
     	for (EnemyCharacter enemy : enemyCharacters) {
     	    switch(enemy.getCurrentHealth()) {
     	    case 4:
-    	    	g.setColor(new Color(255,0,0,255));
+    	    	g.setColor(new Color(128,0,0));
     	    	break;
     	    case 3:
-    	    	g.setColor(new Color(255,0,0,200));
+    	    	g.setColor(new Color(255,0,0));
     	    	break;
     	    case 2:
-    	    	g.setColor(new Color(255,0,0,150));
+    	    	g.setColor(new Color(255,69,0));
     	    	break;
     	    case 1:
-    	    	g.setColor(new Color(255,0,0,100));
+    	    	g.setColor(new Color(250,128,114));
     	    	break;
     	    }
     	    

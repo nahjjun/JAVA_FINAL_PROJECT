@@ -58,13 +58,44 @@ public class Bullet extends MoveObject{
             	// 벽의 체력 최신화
             	wall.setHealth(wall.getHealth()-model.getMainCharacter().getDamage());
             	// 만약 벽의 체력이 0 이하가 된 경우
-            	if(wall.getHealth() <= 0) 
+            	if(wall.getHealth() <= 0) {
+            		// 해당 벽을 삭제한다.
             		model.getWalls().remove(wall);
+
+            		// MazeMatrix의 row,col
+            		int rowM = wall.getRow() / GamePlayPanel.CELL_LENGTH;
+        			int colM = wall.getCol() / GamePlayPanel.CELL_LENGTH;
+            		// 만약 삭제된 벽이 사용자 공간을 둘러싼 벽이라면
+            		if(isBrokenWallNearUserPlace(wall)) {
+                		// 해당 벽의 위치 데이터를 maze의 배열에서 설정한다.
+                		model.getMaze().getMazeMatrix()[rowM][colM] = Maze.USER_ENTRANCE;
+                		// 사용자 입구를 추가해준다.
+                		model.getMaze().getMazeEntrance().add(new Coordinate(rowM,colM));
+                		// model의 userEntrance 배열에 해당 위치 추가
+                		model.getUserEntrances().add(new UserEntrance(rowM*GamePlayPanel.CELL_LENGTH,colM*GamePlayPanel.CELL_LENGTH)); 
+            		}
+            		// 삭제된 벽이 사용자 공간을 둘러싼 벽이 아니라면, 해당 공간을 path로 설정한다.
+            		model.getMaze().getMazeMatrix()[rowM][colM] = Maze.PATH;
             		
+            		
+            		// 맵이 바뀐 이후에, map을 rebuild하고 path를 재설정한다.
+            		model.getMaze().buildGraph();
+            		for(EnemyCharacter enemy : model.getEnemyCharacters()){
+            			enemy.updatePath();
+            		}
+            	}
                 break;
             }         
         }
 	}
+		// 부서진 벽이 사용자 공간 인근에 있는 벽인지 확인하는 함수
+		private boolean isBrokenWallNearUserPlace(Wall wall) {
+			int row = wall.getRow() / GamePlayPanel.CELL_LENGTH;
+			int col = wall.getCol() / GamePlayPanel.CELL_LENGTH;
+			if(row >= 6 && row<=13 && col >= 6 && col <= 13)
+				return true;
+			return false;
+		}
 
 	
 	

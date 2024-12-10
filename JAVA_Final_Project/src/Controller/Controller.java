@@ -80,7 +80,8 @@ public class Controller {
 		public void actionPerformed(ActionEvent e) {
 			// model의 데이터를 전부 초기화해줌
 			model.resetModelData();
-			view.getReadyPage().remakeMazeButtons();;
+			view.getReadyPage().remakeMazeButtons();
+			view.getReadyPage().updateWallNum();
 			stageController.playStage1();
 		}
 	}
@@ -106,11 +107,14 @@ public class Controller {
 		    if(!canPlayGame()) {
 		    	// 알림창을 띄울 수 있는 클래스
 		    	JOptionPane.showMessageDialog(view.getContentPane(), "길을 완전히 막도록 만들 수는 없습니다!");
+		    	model.resetModelData();
 				view.getReadyPage().remakeMazeButtons();
+				view.getReadyPage().updateWallNum();
 				return;
 		    }
 		    	
 		    model.setWalls(); // 벽 객체들 생성
+		    model.setUserEntrances();
 		    contentPane.removeAll();
 		    // 새로운 게임 페이지를 생성.
 		    view.resetGamePage();
@@ -141,7 +145,9 @@ public class Controller {
 	private class MakeAgainButtonActionListener implements ActionListener{
 		@Override
 		public void actionPerformed(ActionEvent e) {
+			model.resetModelData();
 			view.getReadyPage().remakeMazeButtons();
+			view.getReadyPage().updateWallNum();
 		}	
 	}
 	
