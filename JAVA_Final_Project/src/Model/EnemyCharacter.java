@@ -90,6 +90,9 @@ public class EnemyCharacter extends MoveObject{
 	private void moveAlongPath() {
 		Coordinate current = path.get(0);
 	    Coordinate next = path.get(1); // 다음 좌표
+		
+		//Coordinate current = new Coordinate(row/GamePlayPanel.CELL_LENGTH, col/GamePlayPanel.CELL_LENGTH);
+		//Coordinate next = path.get(0);
 	    int direction=-1;
 	    if(next.getRow() < current.getRow())
 	    	direction = Maze.NORTH;

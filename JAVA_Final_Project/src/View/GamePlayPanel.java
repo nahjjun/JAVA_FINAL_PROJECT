@@ -28,7 +28,6 @@ public class GamePlayPanel extends JPanel {
     private Timer timer_game;
 
     
-    
     public GamePlayPanel(Model model, View view, Controller controller) {
         this.model = model;
         this.view = view;
@@ -38,6 +37,7 @@ public class GamePlayPanel extends JPanel {
         
         timer_game = new Timer(1000/60, null);
         model.addEnemyCharacter();
+        
     }
     
     
@@ -49,10 +49,11 @@ public class GamePlayPanel extends JPanel {
     }
     
     
-
+    
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        
         paintMaze(g); // paintMaze()를 호출하여 미로를 그립니다.
         paintMainCharacter(g);
         paintEnemyCharacter(g);

@@ -113,7 +113,7 @@ public class Controller {
 				return;
 		    }
 		    	
-		    model.setWalls(); // 벽 객체들 생성
+		    model.setWalls(); // 벽 객체들 생성. 맨 처음에만 생성한다.
 		    model.setUserEntrances();
 		    contentPane.removeAll();
 		    // 새로운 게임 페이지를 생성.
@@ -303,6 +303,7 @@ public class Controller {
         	view.getGamePage().updateRemainEnemyLabel();
         	view.getGamePage().updateRemainUserHealthLabel();
         	
+        	gamePlayPanel.revalidate();
         	gamePlayPanel.repaint();
         }
     }   

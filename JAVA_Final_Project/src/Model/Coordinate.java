@@ -28,7 +28,7 @@ public class Coordinate {
 		return col;
 	}
 	
-	public void setPrevCoordinate(Coordinate prevCoordinate) throws Exception{
+	public void setPrevCoordinate(Coordinate prevCoordinate){
 		this.prevCoordinate=prevCoordinate;
 	}
 	public Coordinate getPrevCoordinate() {

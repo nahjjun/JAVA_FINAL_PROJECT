@@ -117,35 +117,35 @@ public class GamePage extends JPanel {
     	case 1:
     		model.setMaxEnemyNum(30);
     		// 0.5초마다 적 추가
-    		model.setEnemyAddTime(60/2);
+    		model.setEnemyAddTime(30); 
     		break;
     	case 2:
     		model.setMaxEnemyNum(40);
-    		model.setEnemyAddTime(60/2);
+    		model.setEnemyAddTime(30);
     		EnemyCharacter.damage = 2;
     		EnemyCharacter.health = 2;
     		break;
     	case 3:
     		model.setMaxEnemyNum(50);
-    		model.setEnemyAddTime(60/2);
+    		model.setEnemyAddTime(30);
     		EnemyCharacter.damage = 2;
     		EnemyCharacter.health = 3;
     		break;
     	case 4:
     		model.setMaxEnemyNum(60);
-    		model.setEnemyAddTime(60/3);
+    		model.setEnemyAddTime(20);
     		EnemyCharacter.damage = 2;
     		EnemyCharacter.health = 3;
     		break;
     	case 5:
     		model.setMaxEnemyNum(70);
-    		model.setEnemyAddTime(60/3);
+    		model.setEnemyAddTime(20);
     		EnemyCharacter.damage = 3;
     		EnemyCharacter.health = 3;
     		break;
     	case 6:
     		model.setMaxEnemyNum(80);
-    		model.setEnemyAddTime(60/3);
+    		model.setEnemyAddTime(20);
     		EnemyCharacter.damage = 3;
     		EnemyCharacter.health = 4;
     		break;

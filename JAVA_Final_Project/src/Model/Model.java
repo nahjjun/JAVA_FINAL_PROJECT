@@ -51,13 +51,6 @@ public class Model {
 	
 	
 	public Model() {
-		maze = new Maze();
-		mainCharacter = new MainCharacter(this);
-		enemyCharacters = new ArrayList<EnemyCharacter>();
-		userEntrances = new ArrayList<UserEntrance>();
-		bullets = new ArrayList<Bullet>();
-		walls = new ArrayList<Wall>();
-		
 		resetModelData();
 	}          
 	
@@ -80,24 +73,23 @@ public class Model {
 		
 		int direction = (int)(Math.random()*4);
 		int row=0, col=0;
-		int middle = 0; // 캐릭터를 길 및 셀 중간에 나올 수 있게 위치 지정해줄 변수
 		
 		switch(direction) {
 		case Maze.NORTH:
-			row = middle;
-			col = 9 * GamePlayPanel.CELL_LENGTH+middle;
+			row = 0;
+			col = 9 * GamePlayPanel.CELL_LENGTH;
 			break;
 		case Maze.SOUTH:
-			row = 19 * GamePlayPanel.CELL_LENGTH+middle;
-			col = 9 * GamePlayPanel.CELL_LENGTH+middle;
+			row = 19 * GamePlayPanel.CELL_LENGTH;
+			col = 9 * GamePlayPanel.CELL_LENGTH;
 			break;
 		case Maze.WEST:
-			row = 9 * GamePlayPanel.CELL_LENGTH+middle;
-			col = middle;
+			row = 9 * GamePlayPanel.CELL_LENGTH;
+			col = 0;
 			break;
 		case Maze.EAST:
-			row = 9 * GamePlayPanel.CELL_LENGTH+middle;
-			col = 19 * GamePlayPanel.CELL_LENGTH+middle;
+			row = 9 * GamePlayPanel.CELL_LENGTH;
+			col = 19 * GamePlayPanel.CELL_LENGTH;
 			break;
 		}
 		EnemyCharacter enemy = new EnemyCharacter(this, row, col);
@@ -307,6 +299,13 @@ public class Model {
 	// -------------- Model ----------------//
 	
 	public void resetModelData() {
+		maze = new Maze();
+		mainCharacter = new MainCharacter(this);
+		enemyCharacters = new ArrayList<EnemyCharacter>();
+		userEntrances = new ArrayList<UserEntrance>();
+		bullets = new ArrayList<Bullet>();
+		walls = new ArrayList<Wall>();
+		
 		currentGameStage = 1;
 		
 		maxEnemyNum=30;

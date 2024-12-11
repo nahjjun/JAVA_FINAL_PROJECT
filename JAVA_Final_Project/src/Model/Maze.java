@@ -61,6 +61,10 @@ public class Maze {
 	private HashSet<Coordinate> userPlaceCoordinateSet; // 사용자 공간의 배열 객체들이 들어있는 집합. 이를 활용해서 사용자 캐릭터가 해당 공간에 들어왔는지 확인할 것이다.
 	private HashSet<Coordinate> cantChangeWallCoordinateSet; // 사용자가 바꿀 수 없는 벽 좌표들이 들어있는 집합. 이를 활용해서 사용자가 맵을 변환할 때 제한 사항을 만들것이다.
 	
+	// 미로의 각 위치 노드를 미리 생성해놓기 위한 배열
+	private Coordinate[][] coordinateMatrix;
+	
+	
 	// ------------------------생성자-------------------------//
 	public Maze() {
 		mazeMatrix = new int[ROWS][COLS]; 
@@ -103,6 +107,13 @@ public class Maze {
 		}
 		
 		
+		coordinateMatrix = new Coordinate[Maze.ROWS][Maze.COLS];
+		for(int row=0; row<Maze.ROWS; ++row) {
+			for(int col=0; col<Maze.COLS; ++col) {
+				coordinateMatrix[row][col] = new Coordinate(row,col);		
+			}
+		}
+		
 	}
 	// -------------------------------------------------//
 	
@@ -120,6 +131,9 @@ public class Maze {
 		return mazeMatrix;
 	}
 	
+	public void addMazeEntrance(int row, int col){
+		userEntrance.add(new Coordinate(row, col));
+	}
 	public ArrayList<Coordinate> getMazeEntrance(){
 		return mazeEntrance;
 	}
@@ -184,22 +198,22 @@ public class Maze {
 		// 해당 좌표에 연결되어있는 좌표를 그래프에 추가해주는 함수
 		private void buildGraphList(int row, int col) {
 			if (row - 1 >= 0 && canGoCoordinate(row - 1, col)) {
-				graph[row][col].add(new Coordinate(row - 1, col));
+				graph[row][col].add(coordinateMatrix[row - 1][col]);
 			}
 			if (row + 1 < ROWS && canGoCoordinate(row + 1, col)) {
-				graph[row][col].add(new Coordinate(row + 1, col));
+				graph[row][col].add(coordinateMatrix[row + 1][col]);
 			}
 			if (col + 1 < COLS && canGoCoordinate(row, col + 1)) {
-				graph[row][col].add(new Coordinate(row, col + 1));
+				graph[row][col].add(coordinateMatrix[row][col + 1]);
 			}
 			if (col - 1 >= 0 && canGoCoordinate(row, col - 1)) {
-				graph[row][col].add(new Coordinate(row, col - 1));
+				graph[row][col].add(coordinateMatrix[row][col - 1]);
 			}
 		}
 
 		// 해당 좌표로 갈 수 있는 지 확인하는 함수
 		private boolean canGoCoordinate(int row, int col) {
-			return mazeMatrix[row][col]==PATH || mazeMatrix[row][col]==WALL_ENTRANCE || mazeMatrix[row][col]==USER_ENTRANCE || mazeMatrix[row][col]==USER_PLACE;
+			return mazeMatrix[row][col]==PATH || mazeMatrix[row][col]==WALL_ENTRANCE || mazeMatrix[row][col]==USER_ENTRANCE ;
 		}
 	 // 
 	

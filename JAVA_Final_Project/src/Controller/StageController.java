@@ -45,7 +45,6 @@ public class StageController {
 					contentPane.add(view.getReadyPage(), BorderLayout.CENTER);	
 				}
 				else {
-					model.setWalls(); // 벽 객체들 생성
 					view.resetGamePage();
 					contentPane.add(view.getGamePage(), BorderLayout.CENTER);
 					view.getGamePage().startGame();
@@ -60,7 +59,7 @@ public class StageController {
 	}
 	
 	
-	public void playStage1() {
+	public void playStage1() {	
 		// Stage Title을 먼저 출력하고, 스레드를 사용해서 2초 대기 후 기존 동작을 수행하게 한다.
 		playStage(1);
 	}

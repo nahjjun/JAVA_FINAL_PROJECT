@@ -68,21 +68,23 @@ public class Bullet extends MoveObject{
             		// 만약 삭제된 벽이 사용자 공간을 둘러싼 벽이라면
             		if(isBrokenWallNearUserPlace(wall)) {
                 		// 해당 벽의 위치 데이터를 maze의 배열에서 설정한다.
-                		model.getMaze().getMazeMatrix()[rowM][colM] = Maze.USER_ENTRANCE;
+                		try {
+							model.getMaze().setMazeMatrix(rowM, colM, Maze.USER_ENTRANCE);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
                 		// 사용자 입구를 추가해준다.
-                		model.getMaze().getMazeEntrance().add(new Coordinate(rowM,colM));
+                		model.getMaze().addMazeEntrance(rowM, colM);
                 		// model의 userEntrance 배열에 해당 위치 추가
                 		model.getUserEntrances().add(new UserEntrance(rowM*GamePlayPanel.CELL_LENGTH,colM*GamePlayPanel.CELL_LENGTH)); 
             		}
-            		// 삭제된 벽이 사용자 공간을 둘러싼 벽이 아니라면, 해당 공간을 path로 설정한다.
-            		model.getMaze().getMazeMatrix()[rowM][colM] = Maze.PATH;
-            		
+            		else
+	            		// 삭제된 벽이 사용자 공간을 둘러싼 벽이 아니라면, 해당 공간을 path로 설정한다.
+	            		model.getMaze().getMazeMatrix()[rowM][colM] = Maze.PATH;
+	            		
             		
             		// 맵이 바뀐 이후에, map을 rebuild하고 path를 재설정한다.
             		model.getMaze().buildGraph();
-            		for(EnemyCharacter enemy : model.getEnemyCharacters()){
-            			enemy.updatePath();
-            		}
             	}
                 break;
             }         

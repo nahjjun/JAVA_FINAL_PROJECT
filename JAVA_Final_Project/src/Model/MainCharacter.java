@@ -8,14 +8,15 @@ public class MainCharacter extends MoveObject{
 	private int prevDirection;
 	
 	// ------ 캐릭터 데이터 ------ //  
-	private int health = 10;
-	private int damage = 1;
-	private int moveOnce = 2;
+	private int health;
+	private int damage;
+	private int moveOnce;
 	
 	
 	public MainCharacter(Model model) {
 		super(300,300,20,20);
 		this.model = model;
+		resetData();
 		direction = Maze.NORTH;
 		prevDirection = Maze.NORTH;
 	}
@@ -51,7 +52,7 @@ public class MainCharacter extends MoveObject{
 	public void setDamage(int damage) {
 		this.damage = damage;	
 	}
-	public int getDamage() {return damage;}
+	public int getDamage() {return this.damage;}
 	
 	public void setHealth(int health) {
 		this.health = health;	
