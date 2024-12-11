@@ -78,7 +78,7 @@ public class EnemyCharacter extends MoveObject{
 	// -------------- private void moveToUserEntrance() --------------
 	// 사용자 공간까지 미로를 따라서 이동하는 함수
 	private void moveToUserEntrance() {
-		if(!isArrivedUserPlace && path.size()<=1) {
+		if(!isArrivedUserPlace && path.size()<=0) {
 			isArrivedUserPlace = true;
 			return;
 		}
@@ -88,28 +88,25 @@ public class EnemyCharacter extends MoveObject{
 	}
 	// 나중에 리팩토링 해야함
 	private void moveAlongPath() {
-		Coordinate current = path.get(0);
-	    Coordinate next = path.get(1); // 다음 좌표
-		
-		//Coordinate current = new Coordinate(row/GamePlayPanel.CELL_LENGTH, col/GamePlayPanel.CELL_LENGTH);
-		//Coordinate next = path.get(0);
+		Coordinate current = new Coordinate(row/GamePlayPanel.CELL_LENGTH, col/GamePlayPanel.CELL_LENGTH);
+		Coordinate next = path.get(0);
 	    int direction=-1;
-	    if(next.getRow() < current.getRow())
+	    if(next.getRow()*GamePlayPanel.CELL_LENGTH < row)
 	    	direction = Maze.NORTH;
-	    else if(next.getRow() > current.getRow())
+	    else if(next.getRow()*GamePlayPanel.CELL_LENGTH > row)
 	    	direction = Maze.SOUTH;
-	    else if(next.getCol() < current.getCol())
+	    else if(next.getCol()*GamePlayPanel.CELL_LENGTH < col)
 	    	direction = Maze.WEST;
-	    else if(next.getCol() > current.getCol())
+	    else if(next.getCol()*GamePlayPanel.CELL_LENGTH > col)
 	    	direction = Maze.EAST;
 	    
-	    if (direction == Maze.NORTH && current.getRow()*GamePlayPanel.CELL_LENGTH < row+30) {
+	    if (direction == Maze.NORTH && next.getRow()*GamePlayPanel.CELL_LENGTH < row) {
 	    		decreaseRow();
-	    } else if (direction == Maze.SOUTH && current.getRow()*GamePlayPanel.CELL_LENGTH > row-30) {
+	    } else if (direction == Maze.SOUTH && next.getRow()*GamePlayPanel.CELL_LENGTH > row) {
 	    		increaseRow();
-	    } else if (direction == Maze.WEST && current.getCol()*GamePlayPanel.CELL_LENGTH < col+30) {
+	    } else if (direction == Maze.WEST && next.getCol()*GamePlayPanel.CELL_LENGTH < col) {
 	    		decreaseCol();
-	    } else if (direction == Maze.EAST && current.getCol()*GamePlayPanel.CELL_LENGTH > col-30) {
+	    } else if (direction == Maze.EAST && next.getCol()*GamePlayPanel.CELL_LENGTH > col) {
 	    		increaseCol();
 	    }
 	    else

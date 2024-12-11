@@ -6,6 +6,9 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.JOptionPane;
 import javax.swing.Timer;
@@ -42,7 +45,8 @@ public class Controller {
 			
 			for(int row=0; row<Maze.ROWS; ++row) {
 				for(int col=0; col<Maze.COLS; ++col) {
-					view.getReadyPage().getMazeButton(row, col).addActionListener(new MazeButtonListener());
+					//view.getReadyPage().getMazeButton(row, col).addActionListener(new MazeButtonListener());
+					view.getReadyPage().getMazeButton(row, col).addMouseMotionListener(new MazeButtonDragListener());
 				}
 			}	
 			
@@ -157,39 +161,81 @@ public class Controller {
 		public void actionPerformed(ActionEvent e) {
 			try {
 				MazeButton pressedButton = (MazeButton)e.getSource();
-				// 해당 버튼이 속성이 바뀔 수 있는 버튼이라면, 사용자가 미로를 바꿀 수 있게 설정 및 색깔 변경
-				if(model.getMaze().canChangeItCoordinateState(pressedButton.getRow(), pressedButton.getCol())) {
-					switch(model.getMaze().getMazeMatrix()[pressedButton.getRow()][pressedButton.getCol()]) {
-					case 0:
-						// 길을 벽으로 만들 때, 만들 수 있는 벽을 전부 다 썼디면, 경고창을 띄우고 break;
-						if(model.getRemainWallNum()<=0) {
-							// 알림창을 띄울 수 있는 클래스
-					    	JOptionPane.showMessageDialog(view.getContentPane(), "벽을 모두 사용했습니다! 기존에 있는 벽을 지우고 사용할 수 있습니다.");
-							break;
-						}
-						model.getMaze().setMazeMatrix(pressedButton.getRow(), pressedButton.getCol(), 1);
-						pressedButton.setBackground(View.WALL_COLOR);
-						model.setRemainWallNum(model.getRemainWallNum()-1);
-						break;
-					case 1:
-						model.getMaze().setMazeMatrix(pressedButton.getRow(), pressedButton.getCol(), 0);
-						pressedButton.setBackground(View.PATH_COLOR);
-						model.setRemainWallNum(model.getRemainWallNum()+1);
-						break;
-					default:
-						break;
-					}
-					
-					view.getReadyPage().updateWallNum();
-
-				}							
+				// 눌린 버튼의 상태를 변환
+				switchButtonState(pressedButton);							
 			}catch(Exception err) {
 				System.err.println(err.getMessage());
 			}
 		}
 	}
+	// MazeButton들이 눌렸을 때 실행될 이벤트 리스너
+	private class MazeButtonDragListener extends MouseMotionAdapter implements MouseListener{
+		@Override
+		public void mouseDragged(MouseEvent e) {
+			MazeButton pressedButton = (MazeButton)e.getSource();
+			// 해당 버튼이 드래그되지 않은 상태면 
+			if(!pressedButton.getIsDragged()) {
+				// 버튼의 상태 바꿈
+				switchButtonState(pressedButton);	
+				// 바꾸고 난 뒤, 해당 버튼의 드래그 상태 변수 true로 설정
+				// 더 이상 드래그되지 않도록 설정 
+				pressedButton.setIsDragged(true);	
+			}
+		}
+		@Override
+		public void mouseReleased(MouseEvent e) {
+			MazeButton pressedButton = (MazeButton)e.getSource();
+			// 마우스가 나가고 나면 drag되었는지 확인하는 변수를 false로 설정
+			pressedButton.setIsDragged(false);	
+		}
+		@Override
+		public void mousePressed(MouseEvent e) {}
+		@Override
+		public void mouseClicked(MouseEvent e) {}
+		@Override
+		public void mouseEntered(MouseEvent e) {}
+		@Override
+		public void mouseExited(MouseEvent e) {}
+	}
 	
-	
+		// 해당 버튼의 상태를 바꾸는 함수. 인자로 눌려진 버튼을 받음
+		private void switchButtonState(MazeButton pressedButton) {
+			// 해당 버튼이 속성이 바뀔 수 있는 버튼이라면, 사용자가 미로를 바꿀 수 있게 설정 및 색깔 변경
+			if(model.getMaze().canChangeItCoordinateState(pressedButton.getRow(), pressedButton.getCol())) {
+				switch(model.getMaze().getMazeMatrix()[pressedButton.getRow()][pressedButton.getCol()]) {
+				case 0:
+					// 길을 벽으로 만들 때, 만들 수 있는 벽을 전부 다 썼디면, 경고창을 띄우고 break;
+					if(model.getRemainWallNum()<=0) {
+						// 알림창을 띄울 수 있는 클래스
+				    	JOptionPane.showMessageDialog(view.getContentPane(), "벽을 모두 사용했습니다! 기존에 있는 벽을 지우고 사용할 수 있습니다.");
+						break;
+					}
+					try {
+						model.getMaze().setMazeMatrix(pressedButton.getRow(), pressedButton.getCol(), 1);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					pressedButton.setBackground(View.WALL_COLOR);
+					model.setRemainWallNum(model.getRemainWallNum()-1);
+					break;
+				case 1:
+					try {
+						model.getMaze().setMazeMatrix(pressedButton.getRow(), pressedButton.getCol(), 0);
+					} catch (Exception e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					pressedButton.setBackground(View.PATH_COLOR);
+					model.setRemainWallNum(model.getRemainWallNum()+1);
+					break;
+				default:
+					break;
+				}
+				
+				view.getReadyPage().updateWallNum();
+			}
+		}
 	
 	
 	// ---------------- GamePage 리스너 ---------------- // 
