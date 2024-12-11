@@ -1,14 +1,14 @@
 package View;
 
-import javax.swing.JButton;
+import javax.swing.JLabel;
 
 import Model.Maze;
 
-public class MazeButton extends JButton{
+public class MazeLabel extends JLabel{
 	private int row,col;
 	private boolean isDragged = false;
 	
-	public MazeButton(int row, int col) throws Exception{
+	public MazeLabel(int row, int col) throws Exception{
 		if(row<0 || row>=Maze.ROWS || col<0 || col>=Maze.COLS) 
 			throw new Exception("Model/MazeButton/MazeButton()/옳지 않은 범위의 행/열값이 입력되었습니다.");
 		this.row = row;

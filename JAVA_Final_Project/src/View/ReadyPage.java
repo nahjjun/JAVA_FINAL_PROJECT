@@ -17,7 +17,7 @@ public class ReadyPage extends JPanel{
 	
 	// -------- 게임 패널 ---------- // 
 	private JPanel gamePanel; // 미로를 둘 패널
-	private MazeButton[][] mazeButtons; // 사용자가 만들 맵
+	private MazeLabel[][] mazeLabels; // 사용자가 만들 맵
 	
 	// -------- 인터페이스 ---------- // 
 	private JPanel userInterfacePanel_NORTH; // 사용자 인터페이스 패널 - 북쪽
@@ -41,16 +41,18 @@ public class ReadyPage extends JPanel{
 		gamePanel.setPreferredSize(new Dimension(View.MAZE_PANEL_WIDTH, View.MAZE_PANEL_HEIGHT));
 		gamePanel.setLayout(new GridLayout(20,20,0,0));
 		// mazePanel에 넣을 JButton들 메모리 할당 및 mazePanel에 add
-		mazeButtons = new MazeButton[Maze.ROWS][Maze.COLS];
+		mazeLabels = new MazeLabel[Maze.ROWS][Maze.COLS];
 		for(int row=0; row<Maze.ROWS; ++row) {
 			for(int col=0; col<Maze.COLS; ++col) {
 				try {
-					mazeButtons[row][col] = new MazeButton(row,col);
+					mazeLabels[row][col] = new MazeLabel(row,col);
+					mazeLabels[row][col].setSize(30,30);
+					mazeLabels[row][col].setOpaque(true);
 				} catch (Exception e) {
 					// TODO Auto-generated catch block
 					e.printStackTrace();
 				}
-				gamePanel.add(mazeButtons[row][col]);
+				gamePanel.add(mazeLabels[row][col]);
 			}
 		}	
 		
@@ -87,7 +89,7 @@ public class ReadyPage extends JPanel{
 		
 
 		// 각 버튼의 색깔 재설정
-		updateMazeButtonsColor();
+		updateMazeLabelsColor();
 		
 
 		
@@ -95,7 +97,6 @@ public class ReadyPage extends JPanel{
 		add(gamePanel, BorderLayout.CENTER);
 		add(userInterfacePanel_NORTH, BorderLayout.NORTH);
 		add(userInterfacePanel_SOUTH, BorderLayout.SOUTH);
-		
 		
 	}
 	
@@ -107,9 +108,9 @@ public class ReadyPage extends JPanel{
 	public JButton getMakeAgainButton() {
 		return makeAgainButton;
 	}
-	public JButton getMazeButton(int row, int col) throws Exception{
+	public JLabel getMazeLabel(int row, int col) throws Exception{
 		if(row<0 || row>=Maze.ROWS || col<0 || col>=Maze.COLS) throw new Exception("View/ReadyPage/getMazeButton()/인자로 입력된 행/열 값이 범위를 벗어났습니다.");
-		return mazeButtons[row][col];
+		return mazeLabels[row][col];
 	}
 	
 	
@@ -130,22 +131,22 @@ public class ReadyPage extends JPanel{
 	
 	// --------------public void updateMazeButtonsColor()--------------//
 	// 미로 버튼의 색깔을 model의 mazeMatrix를 기반으로 최신화 하는 함수
-	private void updateMazeButtonsColor() {
+	private void updateMazeLabelsColor() {
 		for(int row=0; row<Maze.ROWS; ++row) {
 			for(int col=0; col<Maze.COLS; ++col) {
 				switch(model.getMaze().getMazeMatrix()[row][col]) {
 				case Maze.PATH:
-					mazeButtons[row][col].setBackground(View.PATH_COLOR);
+					mazeLabels[row][col].setBackground(View.PATH_COLOR);
 					break;
 				case Maze.WALL:
-					mazeButtons[row][col].setBackground(View.WALL_COLOR);
+					mazeLabels[row][col].setBackground(View.WALL_COLOR);
 					break;
 				case Maze.USER_PLACE:
-					mazeButtons[row][col].setBackground(View.USERPLACE_COLOR);
+					mazeLabels[row][col].setBackground(View.USERPLACE_COLOR);
 					break;
 				case Maze.USER_ENTRANCE:
 				case Maze.WALL_ENTRANCE:
-					mazeButtons[row][col].setBackground(View.ENTRANCE_COLOR);
+					mazeLabels[row][col].setBackground(View.ENTRANCE_COLOR);
 					break;
 				}
 			}
@@ -153,9 +154,9 @@ public class ReadyPage extends JPanel{
 	}
 	
 	// MakeAgainButton을 눌렀을 때 실행될 함수
-	public void remakeMazeButtons() {
+	public void remakeMazeLabels() {
 		model.getMaze().initMazeMatrix();
-		updateMazeButtonsColor();
+		updateMazeLabelsColor();
 	}
 	
 }

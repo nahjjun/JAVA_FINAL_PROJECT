@@ -21,7 +21,7 @@ public class Bullet extends MoveObject{
 		this.direction = direction;
 	}
 	
-	
+	// run 함수 안에서 벽에 부딪혔는지 확인하는 작업이 있음
 	public void run() {
 		// 총알 움직임 구현
         switch(direction) {

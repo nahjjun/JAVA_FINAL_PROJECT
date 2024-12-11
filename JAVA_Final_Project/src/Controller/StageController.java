@@ -42,7 +42,9 @@ public class StageController {
 				// 현재 게임 스테이지를 설정
 				if(stageNum == 1) {
 					view.getReadyPage().updateUserInterFace();
-					contentPane.add(view.getReadyPage(), BorderLayout.CENTER);	
+					contentPane.add(view.getReadyPage(), BorderLayout.CENTER);
+					view.getReadyPage().revalidate();
+					view.getReadyPage().repaint();
 				}
 				else {
 					view.resetGamePage();

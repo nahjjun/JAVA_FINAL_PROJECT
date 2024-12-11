@@ -1,13 +1,14 @@
 package Controller;
 
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
 import java.awt.event.MouseMotionAdapter;
 
 import javax.swing.JOptionPane;
@@ -21,7 +22,8 @@ import Model.Maze;
 import Model.Model;
 import View.GamePage;
 import View.GamePlayPanel;
-import View.MazeButton;
+import View.MazeLabel;
+import View.ReadyPage;
 import View.View;
 
 public class Controller {
@@ -45,8 +47,8 @@ public class Controller {
 			
 			for(int row=0; row<Maze.ROWS; ++row) {
 				for(int col=0; col<Maze.COLS; ++col) {
-					//view.getReadyPage().getMazeButton(row, col).addActionListener(new MazeButtonListener());
-					view.getReadyPage().getMazeButton(row, col).addMouseMotionListener(new MazeButtonDragListener());
+					view.getReadyPage().getMazeLabel(row, col).addMouseListener(new MazeLabelListener());
+//					view.getReadyPage().getMazeLabel(row, col).addMouseMotionListener(new MazeLabelDragListener());
 				}
 			}	
 			
@@ -84,7 +86,7 @@ public class Controller {
 		public void actionPerformed(ActionEvent e) {
 			// model의 데이터를 전부 초기화해줌
 			model.resetModelData();
-			view.getReadyPage().remakeMazeButtons();
+			view.getReadyPage().remakeMazeLabels();
 			view.getReadyPage().updateWallNum();
 			stageController.playStage1();
 		}
@@ -112,7 +114,7 @@ public class Controller {
 		    	// 알림창을 띄울 수 있는 클래스
 		    	JOptionPane.showMessageDialog(view.getContentPane(), "길을 완전히 막도록 만들 수는 없습니다!");
 		    	model.resetModelData();
-				view.getReadyPage().remakeMazeButtons();
+				view.getReadyPage().remakeMazeLabels();
 				view.getReadyPage().updateWallNum();
 				return;
 		    }
@@ -150,56 +152,56 @@ public class Controller {
 		@Override
 		public void actionPerformed(ActionEvent e) {
 			model.resetModelData();
-			view.getReadyPage().remakeMazeButtons();
+			view.getReadyPage().remakeMazeLabels();
 			view.getReadyPage().updateWallNum();
 		}	
 	}
 	
+	private boolean mousePressed = false;
+	
 	// MazeButton들이 눌렸을 때 실행될 이벤트 리스너
-	private class MazeButtonListener implements ActionListener{
+	private class MazeLabelListener extends MouseAdapter{
 		@Override
-		public void actionPerformed(ActionEvent e) {
-			try {
-				MazeButton pressedButton = (MazeButton)e.getSource();
-				// 눌린 버튼의 상태를 변환
-				switchButtonState(pressedButton);							
-			}catch(Exception err) {
-				System.err.println(err.getMessage());
-			}
+		public void mouseClicked(MouseEvent e) {
+			MazeLabel pressedLabel = (MazeLabel)e.getSource();
+			// 눌린 버튼의 상태를 변환
+			switchLabelState(pressedLabel);	
 		}
-	}
-	// MazeButton들이 눌렸을 때 실행될 이벤트 리스너
-	private class MazeButtonDragListener extends MouseMotionAdapter implements MouseListener{
-		@Override
-		public void mouseDragged(MouseEvent e) {
-			MazeButton pressedButton = (MazeButton)e.getSource();
-			// 해당 버튼이 드래그되지 않은 상태면 
-			if(!pressedButton.getIsDragged()) {
-				// 버튼의 상태 바꿈
-				switchButtonState(pressedButton);	
-				// 바꾸고 난 뒤, 해당 버튼의 드래그 상태 변수 true로 설정
-				// 더 이상 드래그되지 않도록 설정 
-				pressedButton.setIsDragged(true);	
-			}
-		}
+		
 		@Override
 		public void mouseReleased(MouseEvent e) {
-			MazeButton pressedButton = (MazeButton)e.getSource();
+			MazeLabel pressedLabel = (MazeLabel)e.getSource();
 			// 마우스가 나가고 나면 drag되었는지 확인하는 변수를 false로 설정
-			pressedButton.setIsDragged(false);	
+			pressedLabel.setIsDragged(false);
+			
 		}
-		@Override
-		public void mousePressed(MouseEvent e) {}
-		@Override
-		public void mouseClicked(MouseEvent e) {}
-		@Override
-		public void mouseEntered(MouseEvent e) {}
-		@Override
-		public void mouseExited(MouseEvent e) {}
 	}
 	
+//	
+//	// MazeButton들이 눌렸을 때 실행될 이벤트 리스너
+//	private class MazeLabelDragListener extends MouseMotionAdapter{		
+//		@Override
+//		public void mouseDragged(MouseEvent e) {
+//			ReadyPage pagePanel = view.getReadyPage();
+//			// 마우스 위치를 기준으로 해당 컴포넌트를 찾기
+//			// e.getPoint()는 마우스 이벤트가 발생한 위치를 반환한다.
+//			Component component = pagePanel.getComponentAt(e.getPoint());
+//			
+//			// 만약 마우스 이벤트가 발생한 위치에 있는 컴포넌트가 MazeLabel이라면, 해당 라벨을 얻어온다.
+//			if(component instanceof MazeLabel) {
+//				MazeLabel draggedLabel = (MazeLabel) component;
+//	            if (!draggedLabel.getIsDragged()) {
+//	                switchLabelState(draggedLabel);
+//	                draggedLabel.setIsDragged(true);
+//	            }
+//			}
+//		}
+//		
+//		
+//	}
+	
 		// 해당 버튼의 상태를 바꾸는 함수. 인자로 눌려진 버튼을 받음
-		private void switchButtonState(MazeButton pressedButton) {
+		private void switchLabelState(MazeLabel pressedButton) {
 			// 해당 버튼이 속성이 바뀔 수 있는 버튼이라면, 사용자가 미로를 바꿀 수 있게 설정 및 색깔 변경
 			if(model.getMaze().canChangeItCoordinateState(pressedButton.getRow(), pressedButton.getCol())) {
 				switch(model.getMaze().getMazeMatrix()[pressedButton.getRow()][pressedButton.getCol()]) {
