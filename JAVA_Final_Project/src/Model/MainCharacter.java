@@ -86,28 +86,24 @@ public class MainCharacter extends MoveObject{
 		// 해당 위치의 maze의 행렬값을 확인했을 때 사용자 공간이면 캐릭터 이동
 		if((model.getMaze().getMazeMatrix()[(row+height)/GamePlayPanel.CELL_LENGTH][col/GamePlayPanel.CELL_LENGTH])!=Maze.WALL && (model.getMaze().getMazeMatrix()[(row+height)/GamePlayPanel.CELL_LENGTH][col/GamePlayPanel.CELL_LENGTH])!=Maze.USER_ENTRANCE) {
 			row += moveOnce;
-			prevRow = row; // 이전 위치 최신화
 		}	
 	}
 	@Override
 	public void decreaseRow() {
 		if((model.getMaze().getMazeMatrix()[(row-moveOnce)/GamePlayPanel.CELL_LENGTH][col/GamePlayPanel.CELL_LENGTH])!=Maze.WALL && (model.getMaze().getMazeMatrix()[(row-moveOnce)/GamePlayPanel.CELL_LENGTH][col/GamePlayPanel.CELL_LENGTH])!=Maze.USER_ENTRANCE) {
 			row -= moveOnce;
-			prevRow = row;
 		}
 	}
 	@Override
 	public void increaseCol() {
 		if((model.getMaze().getMazeMatrix()[row/GamePlayPanel.CELL_LENGTH][(col+width)/GamePlayPanel.CELL_LENGTH])!=Maze.WALL && (model.getMaze().getMazeMatrix()[row/GamePlayPanel.CELL_LENGTH][(col+width)/GamePlayPanel.CELL_LENGTH])!=Maze.USER_ENTRANCE) {
 			col += moveOnce;
-			prevCol = col;
 		}			
 	}
 	@Override
 	public void decreaseCol() {
 		if((model.getMaze().getMazeMatrix()[row/GamePlayPanel.CELL_LENGTH][(col-moveOnce)/GamePlayPanel.CELL_LENGTH])!=Maze.WALL && (model.getMaze().getMazeMatrix()[row/GamePlayPanel.CELL_LENGTH][(col-moveOnce)/GamePlayPanel.CELL_LENGTH])!=Maze.USER_ENTRANCE) {
 			col -= moveOnce;
-			prevCol = col;
 		}			
 	}	
 }

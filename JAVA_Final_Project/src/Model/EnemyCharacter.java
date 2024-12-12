@@ -165,19 +165,15 @@ public class EnemyCharacter extends MoveObject{
 	}
 	
 	public void increaseRow() {
-		prevRow = row;
 		row += moveOnce;
 	}
 	public void decreaseRow() {
-		prevRow = row;
 		row -= moveOnce;
 	}
 	public void increaseCol() {
-		prevCol = col;
 		col += moveOnce;
 	}
 	public void decreaseCol() {
-		prevCol = col;
 		col -= moveOnce;
 	}
 }

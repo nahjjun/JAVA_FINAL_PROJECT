@@ -271,9 +271,13 @@ public class Controller {
 	    	try {
 	    		int newDirection = -1;
 		        switch (e.getKeyCode()) {
+		        	case KeyEvent.VK_LEFT:
 		            case KeyEvent.VK_A: newDirection = Maze.WEST; break;
+		            case KeyEvent.VK_RIGHT:
 		            case KeyEvent.VK_D: newDirection = Maze.EAST; break;
+		            case KeyEvent.VK_UP:
 		            case KeyEvent.VK_W: newDirection = Maze.NORTH; break;
+		            case KeyEvent.VK_DOWN:
 		            case KeyEvent.VK_S: newDirection = Maze.SOUTH; break;
 		            case KeyEvent.VK_SPACE: 
 		            	model.addBullet();
@@ -298,13 +302,16 @@ public class Controller {
 	            e.getKeyCode() == KeyEvent.VK_A ||
 	            e.getKeyCode() == KeyEvent.VK_D ||
 	            e.getKeyCode() == KeyEvent.VK_W ||
-	            e.getKeyCode() == KeyEvent.VK_S)) {
+	            e.getKeyCode() == KeyEvent.VK_S ||
+	            e.getKeyCode() == KeyEvent.VK_UP||
+	            e.getKeyCode() == KeyEvent.VK_DOWN||
+	            e.getKeyCode() == KeyEvent.VK_RIGHT||
+	            e.getKeyCode() == KeyEvent.VK_LEFT)) {
 	            currentDirection = -1;
 	            timer.stop();
 	        }
 	    }	
 	}
-	
 	
 	
 	// ------------ GamePlayPanel 리스너 -------------- //
@@ -335,16 +342,8 @@ public class Controller {
         			stageController.endStage();
         			return;
         		}
-        		
-        		Container contentPane = view.getContentPane();
-        		contentPane.removeAll();
-        		contentPane.setLayout(new BorderLayout());
-        		
-        		// 스킬 버튼들을 다시 만들고, 화면에 추가한다.
-        		view.getSelectSkillPage().remakeSkillButtons();
-        		contentPane.add(view.getSelectSkillPage(), BorderLayout.CENTER);
-        		contentPane.revalidate();
-    		    contentPane.repaint();
+        		// 해당 스테이지가 마지막 스테이지가 아니면 스킬 선택 페이지 출력
+        		view.getSelectSkillPage().paintSelectSkillPage();
         		return;
         	}
         	// 적이 아직 전부 죽지 않았다면, 인터페이스 창의 남아있는 적의 개수를 갱신한다. 
@@ -363,6 +362,7 @@ public class Controller {
  	// 방향에 따라 데이터를 증가시켜줌. 만약 움직인 뒤 벽에 부딪힌 총알이 있으면, 해당 총알 삭제 
  	private void updateBulletData() {
  		model.setCurrentBulletAddTime(model.getCurrentBulletAddTime()+1);
+ 		// 총알 
  		if(model.getCurrentBulletAddTime() >= model.getBulletAddTime()) {
  			model.increaseBulletNum();		
  			view.getGamePage().updateRemainBulletLabel();

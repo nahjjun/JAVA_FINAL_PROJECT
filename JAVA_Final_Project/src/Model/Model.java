@@ -12,7 +12,8 @@ public class Model {
 	private ArrayList<Bullet> bullets;
 	private ArrayList<Wall> walls;
 	
-
+	
+	
 	// 게임에서 최대 스테이지 
 	public static int MAX_STAGE = 6;
 	
@@ -216,7 +217,6 @@ public class Model {
 	public void deleteBullet(int index) throws Exception{
 		if(index >= bullets.size()) throw new Exception("Model/deleteBullet()/범위를 벗어난 인덱스 접근입니다");
 		bullets.remove(index);
-		
 	}
 	
 	public void increaseBulletNum() {

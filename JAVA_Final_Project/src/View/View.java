@@ -46,7 +46,7 @@ public class View extends JFrame{
 		readyPage = new ReadyPage(model);
 		gamePage = new GamePage(model, this, controller);
 		endPage = new EndPage(model, this, controller);
-		selectSkillPage  = new SelectSkillPage(model);
+		selectSkillPage  = new SelectSkillPage(model, this);
 		
 		setTitle("미로 디펜스 게임");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);

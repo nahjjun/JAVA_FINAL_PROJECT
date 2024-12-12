@@ -1,5 +1,7 @@
 package View;
 
+import java.awt.BorderLayout;
+import java.awt.Container;
 import java.awt.Font;
 
 import javax.swing.JButton;
@@ -11,6 +13,7 @@ import Model.Model;
 
 public class SelectSkillPage extends JPanel{
 	private Model model;
+	private View view;
 	private JLabel interfaceLabel;
 	private JButton[] skillButtons;
 	// 다양하게 존재하는 스킬들 중에서, 랜덤으로 뽑아서 스킬 버튼을 설정할 배열  
@@ -19,8 +22,9 @@ public class SelectSkillPage extends JPanel{
 	// 현재 총 스킬의 개수. 
 	private final int maxSkillNum = 5;
 	
-	public SelectSkillPage(Model model) {
+	public SelectSkillPage(Model model, View view) {
 		this.model = model;
+		this.view = view;
 		setLayout(null);
 		// interfaceLabel 초기화
 		initInterfaceLabel();
@@ -41,10 +45,22 @@ public class SelectSkillPage extends JPanel{
 		add(interfaceLabel);
 		
 	}
+	// 스킬 선택 페이지를 paint하는 함수
+	public void paintSelectSkillPage() {
+		Container contentPane = view.getContentPane();
+		contentPane.removeAll();
+		contentPane.setLayout(new BorderLayout());
+		
+		// 스킬 버튼들을 다시 만들고, 화면에 추가한다.
+		view.getSelectSkillPage().remakeSkillButtons();
+		contentPane.add(view.getSelectSkillPage(), BorderLayout.CENTER);
+		contentPane.revalidate();
+	    contentPane.repaint();
+	}
 	
 	
 	// 랜덤으로 스킬 버튼들을 섞어주는 함수 
-	public void remakeSkillButtons() {
+	private void remakeSkillButtons() {
 		int count=0;
 		// 0 ~ maxSkillNum-1까지의 숫자를 총 3개 뽑는다.(-1이 나올 가능성은 다른 확률보다 현저히 낮기에, 1~3 까지의 가능성으로 뽑아서 공평하게 스킬이 추출될 수 있게 한다.
 		while(count<3) {

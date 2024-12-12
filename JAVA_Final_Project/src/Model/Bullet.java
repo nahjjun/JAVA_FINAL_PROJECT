@@ -9,7 +9,7 @@ public class Bullet extends MoveObject{
 	private final int direction; // 해당 총알이 부여받은 방향. 값이 -1이면 스레드 종료
 	
 	// ----- 총알 데이터 ----- // 
-	public static int moveOnce = 3;
+	public static int moveOnce = 6;
 	
 	public boolean canRun = true;
 	
@@ -23,6 +23,11 @@ public class Bullet extends MoveObject{
 	
 	// run 함수 안에서 벽에 부딪혔는지 확인하는 작업이 있음
 	public void run() {
+		// 해당 총알이 화면 안에 없으면 종료
+		if(!isInMaze()) {
+			canRun=false;
+			return;
+		}
 		// 총알 움직임 구현
         switch(direction) {
         case Maze.NORTH:
@@ -81,8 +86,6 @@ public class Bullet extends MoveObject{
             		else
 	            		// 삭제된 벽이 사용자 공간을 둘러싼 벽이 아니라면, 해당 공간을 path로 설정한다.
 	            		model.getMaze().getMazeMatrix()[rowM][colM] = Maze.PATH;
-	            		
-            		
             		// 맵이 바뀐 이후에, map을 rebuild하고 path를 재설정한다.
             		model.getMaze().buildGraph();
             	}
@@ -109,19 +112,15 @@ public class Bullet extends MoveObject{
 	
 	// ----- increase / decrease ----- //
 	public void increaseRow() {
-		prevRow = row;
 		row += moveOnce;
 	}
 	public void decreaseRow() {
-		prevRow = row;
 		row -= moveOnce;
 	}
 	public void increaseCol() {
-		prevCol = col;
 		col += moveOnce;
 	}
 	public void decreaseCol() {
-		prevCol = col;
 		col -= moveOnce;
 	}
 }
