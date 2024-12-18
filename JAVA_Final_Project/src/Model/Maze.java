@@ -2,9 +2,12 @@ package Model;
 
 import java.util.ArrayDeque;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Queue;
+import java.util.Stack;
 
 public class Maze {
 	public static final int PATH = 0;
@@ -25,30 +28,32 @@ public class Maze {
 	public static final int WEST = 3;
 	
 	public static final int ROWS = 20;
-	public static final int COLS = 20;
+	public static final int COLS = 21;
+	// 맵 자동생성 시, 2칸씩 뚫어주기 때문에 한쪽 면이 제대로 안뚫리는 문제가 생겨서 Col의 길이를 하나 늘림
+	
 	
 	private static final int [][]initialMatrix = {
-			{1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1}, // 0
-			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 1
-			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 2
-			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 3
-			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 4
-			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 5
-			{1,0,0,0,0,0,1,1,1,4,1,1,1,1,0,0,0,0,0,1}, // 6
-			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,1}, // 7
-			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,1}, // 8
-			{3,0,0,0,0,0,4,2,2,2,2,2,2,4,0,0,0,0,0,3}, // 9
-			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,1}, // 10
-			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,1}, // 11
-			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,1}, // 12
-			{1,0,0,0,0,0,1,1,1,4,1,1,1,1,0,0,0,0,0,1}, // 13
-			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 14
-			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 15
-			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 16
-			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 17
-			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 18
-			{1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1}}; // 19
-		  // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 19
+			{1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1}, // 0
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 1
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 2
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 3
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 4
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 5
+			{1,0,0,0,0,0,1,1,1,4,1,1,1,1,0,0,0,0,0,0,1}, // 6
+			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,0,1}, // 7
+			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,0,1}, // 8
+			{3,0,0,0,0,0,4,2,2,2,2,2,2,4,0,0,0,0,0,0,3}, // 9
+			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,0,1}, // 10
+			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,0,1}, // 11
+			{1,0,0,0,0,0,1,2,2,2,2,2,2,1,0,0,0,0,0,0,1}, // 12
+			{1,0,0,0,0,0,1,1,1,4,1,1,1,1,0,0,0,0,0,0,1}, // 13
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 14
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 15
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 16
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 17
+			{1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1}, // 18
+			{1,1,1,1,1,1,1,1,1,3,1,1,1,1,1,1,1,1,1,1,1}}; // 19
+		  // 0 1 2 3 4 5 6 7 8 9 0 1 2 3 4 5 6 7 8 9 20
 	
 	
 	
@@ -60,7 +65,7 @@ public class Maze {
 	private final ArrayList<Coordinate> userEntrance; 	// 사용자 공간의 입구의 배열
 	private HashSet<Coordinate> userPlaceCoordinateSet; // 사용자 공간의 배열 객체들이 들어있는 집합. 이를 활용해서 사용자 캐릭터가 해당 공간에 들어왔는지 확인할 것이다.
 	private HashSet<Coordinate> cantChangeWallCoordinateSet; // 사용자가 바꿀 수 없는 벽 좌표들이 들어있는 집합. 이를 활용해서 사용자가 맵을 변환할 때 제한 사항을 만들것이다.
-	
+	private HashSet<Coordinate> userPlaceWallCoordinateSet; // 사용자 공간을 둘러싸고 있는 벽을 담는 집합
 	// 미로의 각 위치 노드를 미리 생성해놓기 위한 배열
 	private Coordinate[][] coordinateMatrix;
 	
@@ -97,15 +102,24 @@ public class Maze {
 				userPlaceCoordinateSet.add(new Coordinate(row,col));
 		}
 		
-		// 사용자가 변환할 수 없는 벽들의 좌표를 담은 집합 생성 및 초기화
-		cantChangeWallCoordinateSet = new HashSet<Coordinate>();
-		for(int row=0; row<Maze.ROWS; ++row) {
-			for(int col=0; col<Maze.COLS; ++col) {
-				if(initialMatrix[row][col] == Maze.WALL) // 초기 벽을 만나면
-					cantChangeWallCoordinateSet.add(new Coordinate(row,col));
+		userPlaceWallCoordinateSet = new HashSet<Coordinate>();
+		for(int row=6; row<=13; ++row) {
+			for(int col=6; col<=13; ++col) {
+				if(initialMatrix[row][col] == Maze.WALL || initialMatrix[row][col] == USER_ENTRANCE) // 사용자 공간을 둘러싸고 있는 벽을 만나면
+					// 해당 집합에 좌표값을 넣는다.
+					userPlaceWallCoordinateSet.add(new Coordinate(row,col));
 			}
 		}
 		
+		// 사용자가 변환할 수 없는 벽들의 좌표를 담은 집합 생성 및 초기화
+		// 사용자 공간을 둘러싼 곳은 제외
+		cantChangeWallCoordinateSet = new HashSet<Coordinate>();
+		for(int row=0; row<Maze.ROWS; ++row) {
+			for(int col=0; col<Maze.COLS; ++col) {
+				if(initialMatrix[row][col] == Maze.WALL && !userPlaceWallCoordinateSet.contains(new Coordinate(row,col))) // 초기 벽을 만나면
+					cantChangeWallCoordinateSet.add(new Coordinate(row,col));
+			}
+		}
 		
 		coordinateMatrix = new Coordinate[Maze.ROWS][Maze.COLS];
 		for(int row=0; row<Maze.ROWS; ++row) {
@@ -113,6 +127,7 @@ public class Maze {
 				coordinateMatrix[row][col] = new Coordinate(row,col);		
 			}
 		}
+		
 		
 	}
 	// -------------------------------------------------//
@@ -136,6 +151,10 @@ public class Maze {
 	}
 	public ArrayList<Coordinate> getMazeEntrance(){
 		return mazeEntrance;
+	}
+	
+	public HashSet<Coordinate> getUserPlaceWallCoordinateSet(){
+		return userPlaceWallCoordinateSet;
 	}
 	
 	//----------------public void initMazeMatrix()------------------------
@@ -294,5 +313,117 @@ public class Maze {
 		}
 		
 	
-	
+		
+		
+	// ----------- 미로를 랜덤으로 만들어주는 함수(이차원 배열값을 수정해줌)  ------------ //
+	// 입구가 막혔을 때, 
+	public void makeRandomMaze() {
+		for(int row=0; row<Maze.ROWS; ++row) {
+			for(int col=0; col<Maze.COLS; ++col) {
+				if(mazeMatrix[row][col]==0)
+					mazeMatrix[row][col] = WALL;
+			}
+		}
+		// Dfs로 미로의 길을 뚫어준다.
+		makeRandomMazeDFS(mazeEntrance.get(0).getRow(), mazeEntrance.get(0).getCol());
+		
+		// 새로운 길이 뚫렸기에, 사용자 공간 입구를 다 지워주고 다시 설정해준다. 
+		userEntrance.clear();
+		for(int row=6; row<=13; ++row) {
+			for(int col=6; col<=13; ++col) {
+				if(mazeMatrix[row][col]==USER_ENTRANCE)
+					userEntrance.add(new Coordinate(row,col));
+			}
+		}	
+	}
+		
+		// DFS를 사용해서 맵을 만드는 방법
+		private void makeRandomMazeDFS(int startRow, int startCol) {
+			Stack<Coordinate> stack = new Stack<>();
+			// 시작 좌표를 생성해서 Stack에 push한다.
+			Coordinate newCoordinate = new Coordinate(startRow, startCol);
+			stack.push(newCoordinate);
+			// mazeMatrix는 dfs에서의 visited 역할을 해준다.
+		    mazeMatrix[startRow][startCol] = PATH; // 시작점을 경로로 설정
+		      
+	        while (!stack.isEmpty()) {
+	        	Coordinate currentCoordinate = stack.pop();
+	            int row = currentCoordinate.getRow();
+	            int col = currentCoordinate.getCol();
+
+	            // 방향 데이터를 배열에 넣는다.
+	            // Arrays.asList()로 해당 배열을 데이터를 넣은 상태로 초기화 할 수 있음
+	            ArrayList<Integer> directions = new ArrayList<>(Arrays.asList(NORTH,SOUTH,WEST,EAST));
+	            // Collections.shuffle 함수를 이용해서 랜덤으로 내용을 섞는다. 이로써 랜덤으로 맵 생성이 가능해진다. 
+	            Collections.shuffle(directions);
+
+	            // 랜덤으로 생성한 방향 데이터 순서대로 dfs 진행
+	            for (int direction : directions) {
+	            	// 다음으로 이동할 행/열 값을 가져옴
+	            	// 2칸씩 이동해준다.
+	            	// 1칸으로 하면 맵이 다 지워져버린다.
+	                int nextRow = row + getMovePriceRow(direction)*2; 
+	                int nextCol = col + getMovePriceCol(direction)*2;
+
+	                // 다음으로 이동할 좌표가 허용범위 내에 있고, 다음으로 이동할 공간의 좌표가 벽이라면 해당 방향으로 2칸을 뚫어준다.
+	                // 벽인지 검사하는 조건문을 뒤에 둬야함. 그래야 out of bound 오류가 안남
+	                if (isInMazeBounds(nextRow, nextCol) && mazeMatrix[nextRow][nextCol] == WALL) {
+	                	// 바꿀 좌표가 사용자 공간을 둘러싼 벽이라면, 해당 좌표는 사용자 공간 입구로 설정한다.
+	                	int nextRow1 = row + getMovePriceRow(direction);
+	                	int nextCol1 = col + getMovePriceCol(direction);
+	                	if(userPlaceWallCoordinateSet.contains(new Coordinate(nextRow1,nextCol1)))
+	                		mazeMatrix[nextRow1][nextCol1] = USER_ENTRANCE;
+	                	else
+	                		mazeMatrix[nextRow1][nextCol1] = PATH;
+	                	
+	                	if(userPlaceWallCoordinateSet.contains(new Coordinate(nextRow, nextCol)))
+	                		mazeMatrix[nextRow][nextCol] = USER_ENTRANCE;
+	                	else
+	                		mazeMatrix[nextRow][nextCol] = PATH;
+	                	
+	                    // 새로운 다음 좌표를 stack에 push해준다.
+	                    stack.push(new Coordinate(nextRow, nextCol));
+	                }
+	            }
+	        }
+		}
+		
+		// 행 기준으로 움직여야할 값을 반환해주는 함수 
+		private int getMovePriceRow(int direction) {
+			int answer=0;
+			switch(direction) {
+			case NORTH:
+				answer = -1; 
+				break;
+			case SOUTH:
+				answer = 1;
+				break;
+			}
+			return answer;
+		}
+		// 열 기준으로 움직여야할 값을 반환해주는 함수 
+		private int getMovePriceCol(int direction) {
+			int answer=0;
+			switch(direction) {
+			case WEST:
+				answer = -1; 
+				break;
+			case EAST:
+				answer = 1;
+				break;
+			}
+			return answer;
+		}
+				
+		// 해당 좌표가 미로를 만들 허용 범위 내에 있는지 확인해주는 함수
+		// 가장 가장자리는 벽이 있어야하므로, 해당 부분도 제외하고 확인한다.
+		// 사용자 공간도 제외하고 확인한다
+		private boolean isInMazeBounds(int row, int col) {
+			if((row > 0 && row < Maze.ROWS && col > 0 && col < Maze.COLS) && !isInUserPlace(row,col))
+				return true;
+			return false;
+		}
+		
+		
+		
 }

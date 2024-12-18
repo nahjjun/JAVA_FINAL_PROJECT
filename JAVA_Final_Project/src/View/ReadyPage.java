@@ -25,6 +25,7 @@ public class ReadyPage extends JPanel{
 	
 	private JButton gameStartButton; // 게임 시작 버튼
 	private JButton makeAgainButton; // 맵을 다시 만들 버튼
+	private JButton makeRandomMazeButton; // 맵을 랜덤으로 알아서 만들어주는 버튼
 	private JLabel stageLabel; // 현재 몇 스테이진지 출력할 함수 
 	private JLabel remainWall; // 현재 몇개의 벽이 남았는지 출력
 
@@ -61,6 +62,7 @@ public class ReadyPage extends JPanel{
 		// ------ 남쪽 사용자 인터페이스에 넣을 버튼들 생성 -------- // 
 		gameStartButton = new JButton("게임 시작");
 		makeAgainButton = new JButton("맵 다시 만들기");
+		makeRandomMazeButton = new JButton("맵 자동 생성");
 		
 		// ------ stageLabel 초기화 ------ // 
 		stageLabel = new JLabel("Stage " + model.getCurrentGameStage());
@@ -86,7 +88,7 @@ public class ReadyPage extends JPanel{
 		
 		userInterfacePanel_SOUTH.add(gameStartButton);
 		userInterfacePanel_SOUTH.add(makeAgainButton);		
-		
+		userInterfacePanel_SOUTH.add(makeRandomMazeButton);
 
 		// 각 버튼의 색깔 재설정
 		updateMazeLabelsColor();
@@ -108,6 +110,10 @@ public class ReadyPage extends JPanel{
 	public JButton getMakeAgainButton() {
 		return makeAgainButton;
 	}
+	public JButton getMakeRandomMazeButton() {
+		return makeRandomMazeButton;
+	}
+	
 	public JLabel getMazeLabel(int row, int col) throws Exception{
 		if(row<0 || row>=Maze.ROWS || col<0 || col>=Maze.COLS) throw new Exception("View/ReadyPage/getMazeButton()/인자로 입력된 행/열 값이 범위를 벗어났습니다.");
 		return mazeLabels[row][col];
@@ -131,7 +137,7 @@ public class ReadyPage extends JPanel{
 	
 	// --------------public void updateMazeButtonsColor()--------------//
 	// 미로 버튼의 색깔을 model의 mazeMatrix를 기반으로 최신화 하는 함수
-	private void updateMazeLabelsColor() {
+	public void updateMazeLabelsColor() {
 		for(int row=0; row<Maze.ROWS; ++row) {
 			for(int col=0; col<Maze.COLS; ++col) {
 				switch(model.getMaze().getMazeMatrix()[row][col]) {

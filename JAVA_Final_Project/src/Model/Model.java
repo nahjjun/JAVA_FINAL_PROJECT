@@ -296,6 +296,8 @@ public class Model {
 		return mainCharacter;
 	}
 	
+	
+	
 	// -------------- Model ----------------//
 	
 	public void resetModelData() {
@@ -332,6 +334,7 @@ public class Model {
 		// 적 전체 캐릭터들의 데이터를 초기화
 		EnemyCharacter.resetData();
 	}
+	
 	
 	// ----------- 스킬 ------------- //
 	// 사용자 데미지를 올려주는 함수

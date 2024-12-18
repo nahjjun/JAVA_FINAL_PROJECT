@@ -1,7 +1,10 @@
 package View;
 
+import java.util.Objects;
+
 import javax.swing.JLabel;
 
+import Model.Coordinate;
 import Model.Maze;
 
 public class MazeLabel extends JLabel{
@@ -39,5 +42,4 @@ public class MazeLabel extends JLabel{
 	public void setIsDragged(boolean value) {
 		isDragged = value;
 	}
-	
 }

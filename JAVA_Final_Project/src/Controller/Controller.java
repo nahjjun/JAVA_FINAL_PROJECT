@@ -44,6 +44,7 @@ public class Controller {
 			// ---- ReadyPage class 액션 리스너 할당 ---- //
 			view.getReadyPage().getGameStartButton().addActionListener(new GameStartButtonActionListener());
 			view.getReadyPage().getMakeAgainButton().addActionListener(new MakeAgainButtonActionListener());
+			view.getReadyPage().getMakeRandomMazeButton().addActionListener(new MakeRandomMazeButtonActionListener());
 			
 			for(int row=0; row<Maze.ROWS; ++row) {
 				for(int col=0; col<Maze.COLS; ++col) {
@@ -157,7 +158,29 @@ public class Controller {
 		}	
 	}
 	
-	private boolean mousePressed = false;
+	private class MakeRandomMazeButtonActionListener implements ActionListener{
+		@Override
+		public void actionPerformed(ActionEvent e) {
+			model.resetModelData();
+			// 알아서 벽을 만들어주기에, 벽 개수를 0으로 설정
+			model.setRemainWallNum(0);
+			// 미로를 랜덤으로 재설정한다.
+			model.getMaze().makeRandomMaze();
+			// 이후, 그래프를 rebuild 해주어야한다.
+			model.getMaze().buildGraph(); 
+			// 게임을 실행할 수 있을때까지 다시 미로를 만든다.
+			while(!canPlayGame()) {
+				model.getMaze().makeRandomMaze();
+				model.getMaze().buildGraph(); // 그래프 rebuild
+			}
+			view.getReadyPage().updateMazeLabelsColor();
+			view.getReadyPage().updateUserInterFace();
+		}	
+	}
+	
+	
+	
+	
 	
 	// MazeButton들이 눌렸을 때 실행될 이벤트 리스너
 	private class MazeLabelListener extends MouseAdapter{
@@ -201,11 +224,12 @@ public class Controller {
 //	}
 	
 		// 해당 버튼의 상태를 바꾸는 함수. 인자로 눌려진 버튼을 받음
-		private void switchLabelState(MazeLabel pressedButton) {
+		private void switchLabelState(MazeLabel pressedLabel) {
 			// 해당 버튼이 속성이 바뀔 수 있는 버튼이라면, 사용자가 미로를 바꿀 수 있게 설정 및 색깔 변경
-			if(model.getMaze().canChangeItCoordinateState(pressedButton.getRow(), pressedButton.getCol())) {
-				switch(model.getMaze().getMazeMatrix()[pressedButton.getRow()][pressedButton.getCol()]) {
+			if(model.getMaze().canChangeItCoordinateState(pressedLabel.getRow(), pressedLabel.getCol())) {
+				switch(model.getMaze().getMazeMatrix()[pressedLabel.getRow()][pressedLabel.getCol()]) {
 				case 0:
+				case 4:
 					// 길을 벽으로 만들 때, 만들 수 있는 벽을 전부 다 썼디면, 경고창을 띄우고 break;
 					if(model.getRemainWallNum()<=0) {
 						// 알림창을 띄울 수 있는 클래스
@@ -213,22 +237,29 @@ public class Controller {
 						break;
 					}
 					try {
-						model.getMaze().setMazeMatrix(pressedButton.getRow(), pressedButton.getCol(), 1);
+						model.getMaze().setMazeMatrix(pressedLabel.getRow(), pressedLabel.getCol(), 1);
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					pressedButton.setBackground(View.WALL_COLOR);
+					pressedLabel.setBackground(View.WALL_COLOR);
 					model.setRemainWallNum(model.getRemainWallNum()-1);
 					break;
 				case 1:
 					try {
-						model.getMaze().setMazeMatrix(pressedButton.getRow(), pressedButton.getCol(), 0);
+						Coordinate newCoordinate = new Coordinate(pressedLabel.getRow(), pressedLabel.getCol());
+						if(model.getMaze().getUserPlaceWallCoordinateSet().contains(newCoordinate)) {
+							model.getMaze().setMazeMatrix(pressedLabel.getRow(), pressedLabel.getCol(), Maze.USER_ENTRANCE);
+							pressedLabel.setBackground(View.ENTRANCE_COLOR);
+						}
+						else {
+							model.getMaze().setMazeMatrix(pressedLabel.getRow(), pressedLabel.getCol(), Maze.PATH);
+							pressedLabel.setBackground(View.PATH_COLOR);
+						}
 					} catch (Exception e) {
 						// TODO Auto-generated catch block
 						e.printStackTrace();
 					}
-					pressedButton.setBackground(View.PATH_COLOR);
 					model.setRemainWallNum(model.getRemainWallNum()+1);
 					break;
 				default:
