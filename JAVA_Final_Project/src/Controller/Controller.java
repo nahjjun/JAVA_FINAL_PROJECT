@@ -410,6 +410,7 @@ public class Controller {
  			model.addEnemyCharacter();	
  			model.setCurrentEnemyAddTime(0);
  		}
+ 		// 모든 적 캐릭터 데이터 갱신
  		for(EnemyCharacter e:model.getEnemyCharacters()) {
  			e.run();
  		}

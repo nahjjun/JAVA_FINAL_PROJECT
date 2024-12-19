@@ -90,6 +90,7 @@ public class EnemyCharacter extends MoveObject{
 	private void moveAlongPath() {
 		Coordinate current = new Coordinate(row/GamePlayPanel.CELL_LENGTH, col/GamePlayPanel.CELL_LENGTH);
 		Coordinate next = path.get(0);
+		// 이동 방향 계산
 	    int direction=-1;
 	    if(next.getRow()*GamePlayPanel.CELL_LENGTH < row)
 	    	direction = Maze.NORTH;
@@ -100,6 +101,7 @@ public class EnemyCharacter extends MoveObject{
 	    else if(next.getCol()*GamePlayPanel.CELL_LENGTH > col)
 	    	direction = Maze.EAST;
 	    
+	    // 정해진 이동 방향으로  
 	    if (direction == Maze.NORTH && next.getRow()*GamePlayPanel.CELL_LENGTH < row) {
 	    		decreaseRow();
 	    } else if (direction == Maze.SOUTH && next.getRow()*GamePlayPanel.CELL_LENGTH > row) {
