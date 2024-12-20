@@ -241,6 +241,7 @@ public class Model {
 	}
 	
 	// 게임 시작 버튼을 누르면 벽들을 전부 생성해서 모델에 set한다.
+	// 게임 시작 버튼을 누르기 전에는 Wall 객체들을 생성해서 배열에 넣지 않는다. 시작 버튼을 눌렀을 때 한번만 생성해주는 것이다.
 	public void setWalls() {
 		for(int row=0; row<Maze.ROWS; ++row) {
 			for(int col=0; col<Maze.COLS; ++col) {	

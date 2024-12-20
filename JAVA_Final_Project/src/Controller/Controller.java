@@ -146,8 +146,6 @@ public class Controller {
 		}
 	
 	
-	
-	
 	// MakeAgainButton이 눌렸을 때 실행될 이벤트 리스너
 	private class MakeAgainButtonActionListener implements ActionListener{
 		@Override
@@ -164,15 +162,14 @@ public class Controller {
 			model.resetModelData();
 			// 알아서 벽을 만들어주기에, 벽 개수를 0으로 설정
 			model.setRemainWallNum(0);
-			// 미로를 랜덤으로 재설정한다.
-			model.getMaze().makeRandomMaze();
-			// 이후, 그래프를 rebuild 해주어야한다.
-			model.getMaze().buildGraph(); 
+ 
 			// 게임을 실행할 수 있을때까지 다시 미로를 만든다.
-			while(!canPlayGame()) {
+			do{
+				// 미로를 랜덤으로 재설정한다.
 				model.getMaze().makeRandomMaze();
-				model.getMaze().buildGraph(); // 그래프 rebuild
-			}
+				// 이후, 그래프를 rebuild 해주어야한다.
+				model.getMaze().buildGraph(); 
+			}while(!canPlayGame());
 			view.getReadyPage().updateMazeLabelsColor();
 			view.getReadyPage().updateUserInterFace();
 		}	

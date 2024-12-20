@@ -91,8 +91,8 @@ public class GamePlayPanel extends JPanel {
     	}	        
     }
     private void paintUserPlace(Graphics g) {
-    	for (int row = 0; row < Maze.ROWS; ++row) {
-            for (int col = 0; col < Maze.COLS; ++col) {
+    	for (int row = 7; row <= 12; ++row) {
+            for (int col = 7; col <= 12; ++col) {
                 switch (model.getMaze().getMazeMatrix()[row][col]) {
                     case Maze.USER_PLACE:
             	        int currentRow = row * CELL_LENGTH;
